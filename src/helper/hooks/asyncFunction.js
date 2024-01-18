@@ -15,6 +15,8 @@ import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 import { queryKeys } from "../constant";
 import { useQuery } from "react-query";
+import { date } from "yup";
+import axios from "axios";
 
 export function useDeleteFromCart() {
   const { token, setProductsCounter, productsQuantity, setProductsQuantity } =
@@ -479,20 +481,28 @@ export function useGetCategory(id) {
   };
 }
 
-export function useGetBrand() {
-  const fetchBrand = async (id) => {
-    const [data, errorMessage] = await getData("/api/v1/brands/" + id);
+export function useGetBrand(id) {
+  const fallback = null;
 
-    if (data?.data) {
-      return data.data;
-    } else {
-      console.error(errorMessage);
-      return { name: "oops something went wrong" };
-    }
-  };
+  async function getBrand() {
+    const { data } = await axiosInstance.get("/api/v1/brands/" + id);
+    return data;
+  }
+
+  const {
+    data: brand = fallback,
+    isLoading,
+    error,
+    refetch,
+  } = useQuery([queryKeys.brand, id], getBrand, {
+    enabled: false,
+  });
 
   return {
-    fetchBrand,
+    brand,
+    isLoading,
+    error,
+    refetch,
   };
 }
 

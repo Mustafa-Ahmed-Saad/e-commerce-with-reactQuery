@@ -4,5 +4,6 @@ export const queryKeys = {
   userId: "userId",
   categories: "categories",
   brands: "brands",
+  brand: "brand",
   cart: "cart",
 };

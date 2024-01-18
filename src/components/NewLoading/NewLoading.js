@@ -1,6 +1,8 @@
 import React from "react";
 import "./LoadingStyle.css";
 import { useIsFetching, useIsMutating } from "react-query";
+import { queryKeys } from "../../helper/constant";
+import BrandCardLoading from "../brandCardLoading/BrandCardLoading";
 
 export default function NewLoading() {
   // if you want to show another loading for user query
@@ -13,6 +15,12 @@ export default function NewLoading() {
   const isMutating = useIsMutating();
 
   const display = isFetching || isMutating ? "flex" : "none";
+
+  const isBrandIsFetching = useIsFetching(queryKeys.brand);
+
+  if (isBrandIsFetching) {
+    return <BrandCardLoading />;
+  }
 
   return (
     <>

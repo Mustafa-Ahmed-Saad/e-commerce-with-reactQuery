@@ -1,28 +1,26 @@
-import React, { useEffect, useState } from "react";
-import { useContextMain } from "../../../contexts/MainContext";
+import React, { useState } from "react";
 import { useGetBrands } from "../../../helper/hooks/asyncFunction";
 import SEO from "../../../helper/SEO";
 import BrandCard from "../../brandCard/BrandCard";
-import BrandCardLoading from "../../brandCardLoading/BrandCardLoading";
 import PopUp from "../../popUp/PopUp";
 import { Link } from "react-router-dom";
 
 export default function Brands() {
   const [showPopUp, setShowPopUp] = useState(false);
   const [poPupBrand, setPoPupBrand] = useState(null);
-  const [brandCardLoading, setBrandCardLoading] = useState(false);
+
   const brands = useGetBrands();
 
   const handleClose = () => {
     setShowPopUp(false);
   };
-  const setBrandCardLoadingFromChild = (value) => {
-    setBrandCardLoading(value);
+
+  const handleOpen = () => {
+    setShowPopUp(true);
   };
 
-  const handleShow = (brand) => {
+  const handleBrand = (brand) => {
     setPoPupBrand(brand);
-    setShowPopUp(true);
   };
 
   let ui = (
@@ -46,13 +44,13 @@ export default function Brands() {
           >
             {brands.map((brand) => (
               <div
-                key={brand._id}
+                key={brand._id || brand.id}
                 className="col-12 col-md-6 col-lg-4 col-xl-3"
               >
                 <BrandCard
                   brandDetails={brand}
-                  handleShow={handleShow}
-                  setBrandCardLoading={setBrandCardLoadingFromChild}
+                  handleBrand={handleBrand}
+                  handleOpen={handleOpen}
                 />
               </div>
             ))}
@@ -63,7 +61,7 @@ export default function Brands() {
           handleClose={handleClose}
           poPupBrand={poPupBrand}
         />
-        {brandCardLoading ? <BrandCardLoading /> : null}
+        {/* {brandCardLoading ? <BrandCardLoading /> : null} */}
       </>
     );
   }

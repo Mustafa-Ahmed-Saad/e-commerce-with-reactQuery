@@ -1,29 +1,26 @@
 import Card from "react-bootstrap/Card";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import { useGetBrand } from "../../helper/hooks/asyncFunction";
+import { useEffect } from "react";
+// import { useGetBrand } from "../../helper/hooks/asyncFunction";
 
-export default function BrandCard({
-  brandDetails,
-  handleShow,
-  setBrandCardLoading,
-}) {
-  const { fetchBrand } = useGetBrand();
+export default function BrandCard({ brandDetails, handleBrand, handleOpen }) {
+  const { brand, isLoading, error, refetch } = useGetBrand(brandDetails._id);
 
-  async function getBrand(id) {
-    setBrandCardLoading(true);
-
-    const data = await fetchBrand(id);
-    handleShow(data);
-
-    setBrandCardLoading(false);
+  async function getBrandHandle() {
+    // refetch and make enabled true when click on brand
+    await refetch();
+    handleOpen(true);
   }
 
+  useEffect(() => {
+    if (!isLoading && !error) {
+      handleBrand(brand);
+    }
+  }, [brand]);
+
   return (
-    <div
-      onClick={() => {
-        getBrand(brandDetails._id);
-      }}
-    >
+    <div onClick={getBrandHandle}>
       <Card className="mainShadow">
         <LazyLoadImage
           effect="blur"
