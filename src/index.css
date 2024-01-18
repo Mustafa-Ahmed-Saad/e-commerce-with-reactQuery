@@ -1,0 +1,195 @@
+/* You can add global styles to this file, and also import other style files */
+@import url("https://fonts.googleapis.com/css2?family=Encode+Sans+Expanded:wght@300&display=swap");
+
+:root {
+  --font-family: "Encode Sans Expanded", sans-serif;
+}
+
+:root[data-bs-theme="light"] {
+  --main-color: #0dba0d;
+  --order-bg-color: #f8f9fa;
+  --loading-bg: #fff;
+  --image-grayscale: 0;
+  --image-opacity: 100%;
+}
+
+:root[data-bs-theme="dark"] {
+  --order-bg-color: #000;
+  --main-color: #09a009;
+  --loading-bg: #000;
+  --image-grayscale: 15%;
+  --image-opacity: 90%;
+}
+
+img,
+video {
+  filter: grayscale(var(--image-grayscale)) opacity(var(--image-opacity));
+}
+
+.loading-bg {
+  background-color: var(--loading-bg);
+}
+
+.bg-order-owner {
+  background-color: var(--bs-body-bg) !important;
+}
+
+.order-bg-color {
+  background-color: var(--order-bg-color) !important;
+}
+
+body {
+  font-family: var(--font-family) !important;
+  background-color: var(--bs-body-bg);
+  transition: background 0.2s linear;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+a,
+a:hover {
+  color: black;
+  text-decoration: none !important;
+}
+.product:hover {
+  box-shadow: var(--shadow);
+  border: solid 1px var(--main-color);
+}
+.product .btn {
+  transition: transform 1s, opacity 1s;
+  transform: translateY(100%);
+  opacity: 0;
+}
+.product:hover .btn {
+  opacity: 1;
+  transform: translateY(0%);
+}
+
+.font-sm {
+  font-size: 14px;
+}
+.object-position-center {
+  object-position: center;
+}
+
+.text-main {
+  color: var(--main-color) !important;
+}
+.bg-main {
+  background-color: var(--main-color) !important;
+}
+.btn.btn-main {
+  background-color: var(--main-color) !important;
+  color: white !important;
+}
+.btn.btn-main:hover {
+  background-color: #077007 !important;
+}
+
+.btn.btn-outline-main {
+  background-color: transparent !important;
+  border: 1px solid var(--main-color) !important;
+  color: var(--main-color) !important;
+}
+.btn.btn-outline-main:hover {
+  background-color: var(--main-color) !important;
+  color: white !important;
+}
+
+.transtion-5 {
+  transition: 0.5s;
+}
+
+.offline {
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
+  box-shadow: var(--shadow);
+  padding: 20px;
+  color: white;
+}
+
+.forget-password:hover {
+  color: var(--main-color) !important;
+}
+
+.start-75 {
+  left: 75%;
+}
+input#resetCode,
+input#forgetPassword-email {
+  height: 55px !important;
+  font-size: 17px;
+}
+
+input#resetCode.dirty + label.resetCode,
+input#resetCode:focus + label.resetCode,
+input#forgetPassword-email.dirty + label.forgetPasswordEmail,
+input#forgetPassword-email:focus + label.forgetPasswordEmail {
+  top: 10px !important;
+  background-color: white;
+  font-size: 13px;
+}
+
+/* ------------------------------------------------ main slider and home responsive slider */
+/* dots in home slider  */
+.HomeResponsiveSlider .dots,
+.home-slider .dots {
+  width: 17px;
+  height: 8px;
+  background-color: rgb(172, 172, 172);
+}
+.HomeResponsiveSlider li.slick-active .dots,
+.home-slider li.slick-active .dots {
+  background-color: rgb(67, 67, 67);
+}
+/* outline of img and divs */
+.HomeResponsiveSlider div,
+.home-slider div {
+  outline: none;
+}
+.HomeResponsiveSlider img,
+.home-slider img {
+  outline: none;
+}
+
+.HomeResponsiveSlider .slick-arrow.slick-disabledslick-arrow {
+  opacity: 0.5 !important;
+}
+
+/* ---------------- homeProductCart */
+.mainShadow {
+  border: 2px solid transparent !important;
+  transition: 0.7s;
+}
+.mainShadow:hover {
+  box-shadow: 0px 0px 10px var(--main-color);
+}
+
+/* product slider */
+.productSlider .slick-dots {
+  position: relative;
+  top: 10px;
+}
+
+.productSlider .slick-dots li {
+  height: 50px;
+  margin: 0 0px 4px 0;
+}
+
+.productSlider .slick-dots li {
+  width: 45px;
+}
+
+.h-300px {
+  height: 350px;
+}
+
+.h-3px {
+  height: 3px;
+}
+
+.start-n10 {
+  left: -120px;
+}
