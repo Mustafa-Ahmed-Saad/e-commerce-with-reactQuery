@@ -1,6 +1,6 @@
 import { Link, useLocation, useParams } from "react-router-dom";
 import { useContextMain } from "../../../../contexts/MainContext";
-import { useGetCategory } from "../../../../helper/hooks/asyncFunction";
+import { useGetSubCategories } from "../../../../helper/hooks/asyncFunction";
 import SEO from "../../../../helper/SEO";
 import Loading from "../../../locading/Loading";
 
@@ -8,7 +8,7 @@ export default function SubCategory() {
   const { id } = useParams();
   const { state } = useLocation();
   const { loading } = useContextMain();
-  const { subCategories } = useGetCategory(id);
+  const { subCategories } = useGetSubCategories(id);
 
   let ui = <Loading />;
 

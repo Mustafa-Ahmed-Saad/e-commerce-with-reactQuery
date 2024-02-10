@@ -76,40 +76,6 @@ export async function putData(endPoint, values, head) {
   return [MainData, mainErrorMessage];
 }
 
-// get function to return data and errorMessage
-export async function getData(endPoint, head) {
-  let MainData = false;
-  let mainErrorMessage = false;
-
-  if (head) {
-    await axios
-      .get(`${BaseUrl}${endPoint}`, head)
-      .then(({ data }) => {
-        // if success
-        MainData = data;
-      })
-      .catch((error) => {
-        const errorMessage = error?.response?.data?.message || error?.message;
-        // if error
-        mainErrorMessage = errorMessage;
-      });
-  } else {
-    await axios
-      .get(`${BaseUrl}${endPoint}`)
-      .then(({ data }) => {
-        // if success
-        MainData = data;
-      })
-      .catch((error) => {
-        const errorMessage = error?.response?.data?.message || error?.message;
-        // if error
-        mainErrorMessage = errorMessage;
-      });
-  }
-
-  return [MainData, mainErrorMessage];
-}
-
 // delete function to delete data and return data and errorMessage
 export async function deleteData(endPoint, head) {
   let MainData = false;

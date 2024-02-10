@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ShowProducts from "../../showProducts/ShowProducts";
 import HomeResponsiveSlider from "../../homeResponsiveSlider/HomeResponsiveSlider";
 import MainSlider from "../../mainSlider/MainSlider";
@@ -17,13 +17,13 @@ export default function Home() {
   // TODO: dont forget add load in this project
 
   const [searchLoading, setSearchLoading] = useState(false);
-  const { loading } = useContextMain();
+  const { loading, token } = useContextMain();
 
   const { categories } = useGetCategories();
   const { products, productsToShow, setProductsToShow } = useGetProducts();
 
   // we don't need wishListProducts or setWishListProducts we need to get wishlistProduct and setWishlist by wishlistProduct id
-  useGetWishListProducts("onlyOne");
+  const { refetch } = useGetWishListProducts(token);
 
   const toggleSearchLoading = (value) => {
     setSearchLoading(value);
@@ -32,6 +32,10 @@ export default function Home() {
   function changeProduct(newProduct) {
     setProductsToShow(newProduct);
   }
+
+  useEffect(() => {
+    refetch(token);
+  }, [refetch]);
 
   // return
   let ui = <Loading />;

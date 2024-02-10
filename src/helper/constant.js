@@ -6,4 +6,7 @@ export const queryKeys = {
   brands: "brands",
   brand: "brand",
   cart: "cart",
+  product: "product",
+  subCategories: "subCategories",
+  getWishList: "getWishList",
 };

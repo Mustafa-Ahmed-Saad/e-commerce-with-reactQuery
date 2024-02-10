@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import Cookies from "js-cookie";
-import { getData } from "../helper/api";
 import useLocalStorage from "use-local-storage";
+import { useGetWishListProducts } from "../helper/hooks/asyncFunction";
 
 const MainContext = createContext();
 export function useContextMain() {
@@ -34,32 +34,24 @@ export default function MainContextProvider({ children }) {
   );
   const [userId, setUserId] = useLocalStorage("userId", false);
 
-  async function getWishList(token) {
-    if (!(wishList?.length > 0)) {
-      // if no wish list in localStorage
-      const [data, errorMessage] = await getData("/api/v1/wishlist/", {
-        headers: {
-          token: token,
-        },
-      });
+  const { wishListProducts, refetch } = useGetWishListProducts(token);
 
-      if (data?.data) {
-        const newWishlist = data?.data.map(({ id }) => {
-          return id;
-        });
-        setWishList(newWishlist);
-      } else {
-        console.error(errorMessage);
-      }
-    }
-  }
-
-  // Load token from cookies and wishlist
   useEffect(() => {
     if (token) {
-      getWishList(token);
+      if (!(wishList?.length > 0)) {
+        refetch(token);
+      }
     }
   }, [token]);
+
+  useEffect(() => {
+    if (wishListProducts.length > 0) {
+      const newWishlist = wishListProducts.map(({ id }) => {
+        return id;
+      });
+      setWishList(newWishlist);
+    }
+  }, [wishListProducts]);
 
   // You can include other shared state and functions here
   return (

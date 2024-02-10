@@ -1,22 +1,13 @@
-import {
-  axiosInstance,
-  deleteData,
-  getData,
-  newGetData,
-  postData,
-  putData,
-} from "../api";
+import { axiosInstance, deleteData, postData, putData } from "../api";
 import { useContextMain } from "../../contexts/MainContext";
 import { toast } from "react-hot-toast";
 import { notify } from "../toastFire";
 import { useNavigate } from "react-router-dom";
 import jwt_decode from "jwt-decode";
 import Cookies from "js-cookie";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { queryKeys } from "../constant";
 import { useQuery } from "react-query";
-import { date } from "yup";
-import axios from "axios";
 
 export function useDeleteFromCart() {
   const { token, setProductsCounter, productsQuantity, setProductsQuantity } =
@@ -322,69 +313,6 @@ export function useVerifyCodeHook() {
   };
 }
 
-// ....................................................................
-
-export function useGetAllOrders() {
-  const { userId } = useContextMain();
-  const fallback = [];
-
-  async function getAllOrders() {
-    const data = await axiosInstance.get(`/api/v1/orders/user/${userId}`);
-    return data?.data;
-  }
-
-  const { data: orders = fallback } = useQuery(
-    [queryKeys.orders, queryKeys.userId],
-    getAllOrders,
-    {
-      enabled: !!userId,
-    }
-  );
-
-  return orders;
-}
-
-export function useGetWishListProducts(onlyOne) {
-  const { token, wishList, setWishList, setLoading } = useContextMain();
-  const [wishListProducts, setWishListProducts] = useState([]);
-
-  async function getWishList() {
-    setLoading(true);
-
-    const [data, errorMessage] = await getData("/api/v1/wishlist/", {
-      headers: {
-        token: token,
-      },
-    });
-
-    if (data?.data) {
-      const newWishlist = data?.data.map(({ id }) => {
-        return id;
-      });
-      setWishList(newWishlist);
-      setWishListProducts(data?.data);
-    } else {
-      console.error(errorMessage);
-    }
-
-    setLoading(false);
-  }
-
-  useEffect(() => {
-    if (onlyOne === "onlyOne" && wishList?.length > 0) {
-      // if token and if no wishlist
-      return;
-    }
-
-    getWishList();
-  }, []);
-
-  return {
-    wishListProducts,
-    setWishListProducts,
-  };
-}
-
 export function useDeleteFromWishList() {
   const { token, setWishList } = useContextMain();
 
@@ -414,6 +342,54 @@ export function useDeleteFromWishList() {
   };
 }
 
+// ....................................................................
+
+export function useGetAllOrders() {
+  const { userId } = useContextMain();
+  const fallback = [];
+
+  async function getAllOrders() {
+    const data = await axiosInstance.get(`/api/v1/orders/user/${userId}`);
+    return data?.data;
+  }
+
+  const { data: orders = fallback } = useQuery(
+    [queryKeys.orders, queryKeys.userId],
+    getAllOrders,
+    {
+      enabled: !!userId,
+    }
+  );
+
+  return orders;
+}
+
+export function useGetWishListProducts(token) {
+  let wishListProducts = [];
+
+  async function getWishList() {
+    const data = await axiosInstance("/api/v1/wishlist/", {
+      headers: {
+        token: token,
+      },
+    });
+    return data?.data?.data;
+  }
+
+  const { data, refetch } = useQuery([queryKeys.getWishList], getWishList, {
+    enabled: false,
+  });
+
+  if (data) {
+    wishListProducts = data;
+  }
+
+  return {
+    wishListProducts,
+    refetch,
+  };
+}
+
 export function useGetCategories(withLoading) {
   const fallback = [];
 
@@ -431,7 +407,7 @@ export function useGetCategories(withLoading) {
 }
 
 export function useGetProducts() {
-  const { setAllAppProducts, setLoading } = useContextMain();
+  const { setAllAppProducts } = useContextMain();
   const [productsToShow, setProductsToShow] = useState([]);
   const fallback = [];
 
@@ -453,28 +429,19 @@ export function useGetProducts() {
   };
 }
 
-export function useGetCategory(id) {
-  const { setLoading } = useContextMain();
-  const [subCategories, setSubCategories] = useState([]);
+export function useGetSubCategories(id) {
+  let subCategories = [];
 
-  async function getSubCategory() {
-    setLoading(true);
-
-    const [data, errorMessage] = await getData(
-      "/api/v1/categories/" + id + "/subcategories"
-    );
-    if (data?.data) {
-      setSubCategories(data.data);
-    } else {
-      console.error(errorMessage);
-    }
-
-    setLoading(false);
+  async function getSubCategories() {
+    const data = await axiosInstance(`/api/v1/categories/${id}/subcategories`);
+    return data?.data;
   }
 
-  useEffect(() => {
-    getSubCategory();
-  }, []);
+  const { data } = useQuery([queryKeys.subCategories, id], getSubCategories);
+
+  if (data?.data) {
+    subCategories = data.data;
+  }
 
   return {
     subCategories,
@@ -553,26 +520,18 @@ export function useGetCartProducts() {
 }
 
 export function useGetProduct(id) {
-  const { setLoading } = useContextMain();
-  const [product, setProduct] = useState(null);
+  let product = null;
 
   async function getProduct() {
-    setLoading(true);
-
-    const [data, errorMessage] = await getData("/api/v1/products/" + id);
-
-    if (data?.data) {
-      setProduct(data.data);
-    } else {
-      console.error(errorMessage);
-    }
-
-    setLoading(false);
+    const data = await axiosInstance(`/api/v1/products/${id}`);
+    return data?.data;
   }
 
-  useEffect(() => {
-    getProduct();
-  }, []);
+  const { data } = useQuery([queryKeys.product, id], getProduct);
+
+  if (data?.data) {
+    product = data.data;
+  }
 
   return {
     product,
