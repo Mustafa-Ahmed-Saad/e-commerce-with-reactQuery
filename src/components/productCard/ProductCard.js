@@ -16,16 +16,17 @@ import { LazyLoadImage } from "react-lazy-load-image-component";
 export default function ProductCard({ product, index }) {
   const navigate = useNavigate();
   const { wishList } = useContextMain();
-  const { handelLoveHook } = useHandelLoveHook();
+  const handelLoveHook = useHandelLoveHook();
   const { addToCardHook } = useAddToCardHook();
 
   async function addToCart(id) {
     await addToCardHook(id);
   }
 
-  async function handelLove(id) {
-    await handelLoveHook(id);
-  }
+  // TODO: remove tis tow line and use handelLoveHook direct inested of handelLove
+  // async function handelLove(id) {
+  //   await handelLoveHook(id);
+  // }
 
   function goToProduct(e, id) {
     const targetElement = e.target;
@@ -116,7 +117,7 @@ export default function ProductCard({ product, index }) {
               </Button>
               <span
                 className="heartIcon"
-                onClick={() => handelLove(product.id)}
+                onClick={() => handelLoveHook(product.id)}
               >
                 <FontAwesomeIcon
                   className={`d-inline-block ms-auto fa-xl heartIcon ${

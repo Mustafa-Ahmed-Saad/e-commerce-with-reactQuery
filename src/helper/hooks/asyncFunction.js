@@ -6,8 +6,10 @@ import { useNavigate } from "react-router-dom";
 import jwt_decode from "jwt-decode";
 import Cookies from "js-cookie";
 import { useState } from "react";
-import { queryKeys } from "../constant";
-import { useQuery } from "react-query";
+import { mutationKeys, queryKeys } from "../constant";
+import { useMutation, useQuery, useQueryClient } from "react-query";
+
+// TODO: out all async function in fun hook
 
 export function useDeleteFromCart() {
   const { token, setProductsCounter, productsQuantity, setProductsQuantity } =
@@ -215,15 +217,18 @@ export function useLoginHook() {
 
 export function useHandelLoveHook() {
   const { wishList, setWishList, token } = useContextMain();
+  let tLoading;
+  const ExistInWishlist = "exist in wishlist";
 
-  const handelLoveHook = async (id) => {
+  async function handelLoveHook(id) {
     // TODO: check here on this ((wishListProductIds.includes(id) || isIdExistInContextWishList(id)) )
     if (wishList?.includes(id)) {
       notify("success", "product already exist in wish list");
+      return ExistInWishlist;
     } else {
-      let tLoading = notify("loading", `loading...`);
-      const [data, errorMessage] = await postData(
-        "/api/v1/wishlist",
+      tLoading = notify("loading", `loading...`);
+      const data = await axiosInstance.post(
+        `/api/v1/wishlist`,
         {
           productId: id,
         },
@@ -233,25 +238,32 @@ export function useHandelLoveHook() {
           },
         }
       );
-
-      // TODO: conteniue
-      if (data?.data) {
-        //   put data?.data in local storage wishList (setState of wishlist context)
-        toast.dismiss(tLoading);
-        notify("success", `${data?.message}`);
-        setWishList(data?.data);
-        return "done";
-      } else {
-        toast.dismiss(tLoading);
-        notify("error", `Opps ${errorMessage}`);
-        console.error(errorMessage);
-      }
+      return data?.data;
     }
-  };
+  }
 
-  return {
-    handelLoveHook,
-  };
+  const queryClient = useQueryClient();
+
+  // mutate function
+  const { mutate } = useMutation((id) => handelLoveHook(id), {
+    mutationKey: [mutationKeys.love],
+    onSuccess: (data) => {
+      if (data === ExistInWishlist) {
+        return;
+      }
+      toast.dismiss(tLoading);
+      notify("success", `${data?.message || "success"}`);
+      queryClient.invalidateQueries("wishlist");
+      setWishList(data?.data);
+    },
+    onError: (error) => {
+      console.log("error", error);
+      toast.dismiss(tLoading);
+      notify("error", `Opps something went wrong ${error.message}`);
+    },
+  });
+
+  return mutate;
 }
 
 export function useAddToCardHook() {
@@ -376,7 +388,7 @@ export function useGetWishListProducts(token) {
     return data?.data?.data;
   }
 
-  const { data, refetch } = useQuery([queryKeys.getWishList], getWishList, {
+  const { data, refetch } = useQuery([queryKeys.wishList], getWishList, {
     enabled: false,
   });
 

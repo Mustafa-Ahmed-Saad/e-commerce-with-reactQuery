@@ -15,13 +15,13 @@ export default function Product() {
   const { id } = useParams();
   const { wishList, loading } = useContextMain();
 
-  const { handelLoveHook } = useHandelLoveHook();
+  const handelLoveHook = useHandelLoveHook();
   const { addToCardHook } = useAddToCardHook();
   const { product } = useGetProduct(id);
 
-  async function handelLove(id) {
-    await handelLoveHook(id);
-  }
+  // async function handelLove(id) {
+  //   await handelLoveHook(id);
+  // }
 
   async function addToCart(id) {
     await addToCardHook(id);
@@ -78,7 +78,7 @@ export default function Product() {
                     }`}
                     icon={faHeart}
                     onClick={() => {
-                      handelLove(product?.id);
+                      handelLoveHook(product?.id);
                     }}
                   />
                 </div>

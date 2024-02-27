@@ -1,7 +1,7 @@
 import React from "react";
 import "./LoadingStyle.css";
 import { useIsFetching, useIsMutating } from "react-query";
-import { queryKeys } from "../../helper/constant";
+import { mutationKeys, queryKeys } from "../../helper/constant";
 import BrandCardLoading from "../brandCardLoading/BrandCardLoading";
 
 export default function NewLoading() {
@@ -17,11 +17,19 @@ export default function NewLoading() {
   const display = isFetching || isMutating ? "flex" : "none";
 
   const isBrandIsFetching = useIsFetching(queryKeys.brand);
+  const isWishlistMutating = useIsMutating(mutationKeys.love); // handelLoveHook (when click love icon)
 
+  // brand loading (query)
   if (isBrandIsFetching) {
     return <BrandCardLoading />;
   }
 
+  // love loading (mutaion)
+  if (isWishlistMutating) {
+    return;
+  }
+
+  // main loading
   return (
     <>
       <div

@@ -8,5 +8,9 @@ export const queryKeys = {
   cart: "cart",
   product: "product",
   subCategories: "subCategories",
-  getWishList: "getWishList",
+  wishList: "wishList",
+};
+
+export const mutationKeys = {
+  love: "love",
 };
