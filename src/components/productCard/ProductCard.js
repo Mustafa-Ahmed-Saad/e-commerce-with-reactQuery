@@ -23,11 +23,6 @@ export default function ProductCard({ product, index }) {
     await addToCardHook(id);
   }
 
-  // TODO: remove tis tow line and use handelLoveHook direct inested of handelLove
-  // async function handelLove(id) {
-  //   await handelLoveHook(id);
-  // }
-
   function goToProduct(e, id) {
     const targetElement = e.target;
 

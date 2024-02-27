@@ -19,10 +19,6 @@ export default function Product() {
   const { addToCardHook } = useAddToCardHook();
   const { product } = useGetProduct(id);
 
-  // async function handelLove(id) {
-  //   await handelLoveHook(id);
-  // }
-
   async function addToCart(id) {
     await addToCardHook(id);
   }
