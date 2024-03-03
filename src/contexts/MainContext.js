@@ -46,8 +46,8 @@ export default function MainContextProvider({ children }) {
 
   useEffect(() => {
     if (wishListProducts.length > 0) {
-      const newWishlist = wishListProducts.map(({ id }) => {
-        return id;
+      const newWishlist = wishListProducts.map((p) => {
+        return p.id || p;
       });
       setWishList(newWishlist);
     }

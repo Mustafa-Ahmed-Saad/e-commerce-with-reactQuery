@@ -274,38 +274,52 @@ export function useVerifyCodeHook() {
   };
 }
 
-export function useDeleteFromWishList() {
-  const { token, setWishList } = useContextMain();
-
-  const deleteFromWishList = async (id) => {
-    let tLoading = notify("loading", `loading...`);
-    const [data, errorMessage] = await deleteData(`/api/v1/wishlist/${id}`, {
-      headers: { token: token },
-    });
-
-    if (data?.data) {
-      // TODONOW: id data?.data is array of wishlist ids delete the 7 line and setWishlist(data?.data)
-
-      setWishList(data.data);
-      toast.dismiss(tLoading);
-      notify("success", `${data.message}`);
-
-      return data.data;
-    } else {
-      toast.dismiss(tLoading);
-      notify("error", `Opps ${errorMessage}`);
-      console.error(errorMessage);
-    }
-  };
-
-  return {
-    deleteFromWishList,
-  };
-}
-
 // ....................................................................
 // .......................... mutations ..............................
 // ....................................................................
+
+export function useDeleteFromWishList() {
+  const { token, setWishList } = useContextMain();
+  // let tLoading = notify("loading", `loading...`);
+  let tLoading;
+
+  const deleteFromWishList = async (id) => {
+    tLoading = notify("loading", `loading...`);
+    const data = await axiosInstance.delete(`/api/v1/wishlist/${id}`, {
+      headers: { token: token },
+    });
+
+    return data?.data?.data;
+  };
+
+  const queryClient = useQueryClient();
+
+  const { mutate } = useMutation((id) => deleteFromWishList(id), {
+    mutationKey: [mutationKeys.deleteFromWishList],
+    onSuccess: (data) => {
+      const oldWishListProducts = queryClient.getQueryData(queryKeys.wishList);
+      // filter this array and rturn only when ids match
+      const newWishListProducts = oldWishListProducts.filter(
+        (product) => data.includes(product._id) || data.includes(product.id)
+      );
+      queryClient.setQueryData(queryKeys.wishList, newWishListProducts);
+      // queryClient.setQueryData(queryKeys.wishList, data);
+      queryClient.setQueryData(queryKeys.wishListProductIds, data);
+      setWishList(data);
+      toast.dismiss(tLoading);
+      notify("success", `Deleted successfully`);
+    },
+    onError: (error) => {
+      toast.dismiss(tLoading);
+      notify("error", `Opps ${error.message}`);
+      console.error(error.message);
+    },
+  });
+
+  return {
+    deleteFromWishList: mutate,
+  };
+}
 
 export function useHandelLoveHook() {
   const { wishList, setWishList, token } = useContextMain();
@@ -345,7 +359,8 @@ export function useHandelLoveHook() {
       }
       toast.dismiss(tLoading);
       notify("success", `${data?.message || "success"}`);
-      queryClient.invalidateQueries("wishlist");
+      queryClient.invalidateQueries(queryKeys.wishList);
+      queryClient.setQueryData(queryKeys.wishListProductIds, data?.data);
       setWishList(data?.data);
     },
     onError: (error) => {

@@ -9,8 +9,10 @@ export const queryKeys = {
   product: "product",
   subCategories: "subCategories",
   wishList: "wishList",
+  wishListProductIds: "wishListProductIds",
 };
 
 export const mutationKeys = {
   love: "love",
+  deleteFromWishList: "deleteFromWishList",
 };
