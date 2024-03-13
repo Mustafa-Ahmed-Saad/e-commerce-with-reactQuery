@@ -13,6 +13,9 @@ export const queryKeys = {
 };
 
 export const mutationKeys = {
-  love: "love",
+  handelLove: "handelLove",
   deleteFromWishList: "deleteFromWishList",
+  addToCard: "addToCard",
+  deleteFromCart: "deleteFromCart",
+  clearAllProductsCart: "clearAllProductsCart",
 };

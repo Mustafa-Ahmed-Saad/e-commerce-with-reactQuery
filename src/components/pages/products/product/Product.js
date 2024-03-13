@@ -19,10 +19,6 @@ export default function Product() {
   const { addToCardHook } = useAddToCardHook();
   const { product } = useGetProduct(id);
 
-  async function addToCart(id) {
-    await addToCardHook(id);
-  }
-
   let ui = <Loading />;
 
   if (!loading) {
@@ -60,7 +56,7 @@ export default function Product() {
                 <button
                   className="btn btn-main w-75"
                   onClick={() => {
-                    addToCart(product?.id);
+                    addToCardHook(product?.id);
                   }}
                 >
                   + Add

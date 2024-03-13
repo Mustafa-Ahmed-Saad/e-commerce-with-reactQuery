@@ -12,7 +12,7 @@ import {
 } from "../../../helper/hooks/asyncFunction";
 import SEO from "../../../helper/SEO";
 import Loading from "../../locading/Loading";
-import { useQueryClient } from "react-query";
+import { useUpdateCart } from "../../../helper/hooks/updateCart";
 
 export default function Cart() {
   const { productsCounter, productsQuantity, setProductsQuantity } =
@@ -28,52 +28,23 @@ export default function Cart() {
   const { deleteFromCart } = useDeleteFromCart();
   const { cartId, allProductsInCart, totalCartPrice } = useGetCartProducts();
 
-  const queryClient = useQueryClient();
+  // const queryClient = useQueryClient();
 
-  function updateCartDataQuery(products, totalCartPrice) {
-    const cartData = queryClient.getQueryData(["cart"]);
-    queryClient.setQueryData(["cart"], {
-      ...cartData,
-      products,
-      totalCartPrice,
-    });
-  }
+  const updateCart = useUpdateCart();
 
-  async function deleteProductFromCart(id, index, oldQuantity) {
-    const data = await deleteFromCart(id);
+  function deleteProductFromCart(id, index, oldQuantity) {
+    const dataParametars = {
+      id: id,
+      index: index,
+      oldQuantity: oldQuantity,
+      allProductsInCart: allProductsInCart,
+    };
 
-    // set Query data with data.products
-    updateCartDataQuery(data.products, data.totalCartPrice);
-
-    // setAllProductsInCart(data.products);
-    // setTotalCartPrice(data.totalCartPrice);
-    // remove two line above setAllProductsInCart, setTotalCartPrice
-
-    // if error
-    if (data.myError && oldQuantity) {
-      const nProducts = [...allProductsInCart];
-      nProducts[index].count = oldQuantity;
-      updateCartDataQuery(nProducts, data.totalCartPrice);
-
-      // setAllProductsInCart(nProducts);
-      // remove line above setAllProductsInCart
-    }
+    deleteFromCart(dataParametars);
   }
 
   function handleCheckOut() {
     navigate(`/check-out/${cartId}`);
-  }
-
-  async function clearAllProductsFromCart() {
-    const data = await clearAllProductsCart();
-
-    if (data) {
-      updateCartDataQuery([], 0);
-
-      // setAllProductsInCart([]);
-      // setTotalCartPrice(0);
-      // remove two line above setAllProductsInCart setTotalCartPrice
-    }
   }
 
   async function updateProductQuantity(productId, count, index, totalPrice) {
@@ -85,7 +56,7 @@ export default function Cart() {
     const newProducts = [...allProductsInCart];
     newProducts[index].count = count;
 
-    updateCartDataQuery(newProducts, totalCartPrice + totalPrice);
+    updateCart(newProducts, totalCartPrice + totalPrice);
 
     if (reqInterval) {
       clearTimeout(reqInterval);
@@ -100,7 +71,7 @@ export default function Cart() {
 
           if (data) {
             // setTotalCartPrice(data.totalCartPrice);
-            updateCartDataQuery(data.products, data.totalCartPrice);
+            updateCart(data.products, data.totalCartPrice);
 
             // setAllProductsInCart(data.products);
             // TODO: check it ishow setProductsCounter here or not
@@ -112,7 +83,7 @@ export default function Cart() {
           } else {
             const newProducts = [...allProductsInCart];
             newProducts[index].count = productsQuantity[productId];
-            updateCartDataQuery(newProducts, 0);
+            updateCart(newProducts, 0);
 
             // setAllProductsInCart(newProducts);
           }
@@ -180,7 +151,7 @@ export default function Cart() {
                       <button
                         className="btn border-0 ps-0 text-danger"
                         onClick={() => {
-                          deleteProductFromCart(id);
+                          deleteProductFromCart(id, index);
                         }}
                       >
                         <FontAwesomeIcon icon={faTrash} /> remove
@@ -214,7 +185,7 @@ export default function Cart() {
           <div className="text-center mt-5">
             <button
               className="btn btn-outline-danger btn-lg fw-bold"
-              onClick={clearAllProductsFromCart}
+              onClick={clearAllProductsCart}
             >
               <span className="me-2">clear all</span>{" "}
               <FontAwesomeIcon icon={faTrash} />

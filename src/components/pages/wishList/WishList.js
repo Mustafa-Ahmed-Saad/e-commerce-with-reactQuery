@@ -10,10 +10,9 @@ import {
 } from "../../../helper/hooks/asyncFunction";
 import SEO from "../../../helper/SEO";
 import { useEffect, useState } from "react";
-import WOW from "wow.js";
 
 export default function WishList() {
-  const { setWishList, token } = useContextMain();
+  const { wishList, setWishList, token } = useContextMain();
   const { addToCardHook } = useAddToCardHook();
   const { deleteFromWishList } = useDeleteFromWishList();
   const { wishListProducts, refetch } = useGetWishListProducts(token);
@@ -32,30 +31,21 @@ export default function WishList() {
   }, [wishListProducts]);
 
   useEffect(() => {
-    new WOW().init();
-  });
+    if (wishList?.length === 0) {
+      // const newProducts = wishListProducts.filter((product) => {
+      //   if (data.includes(product.id)) {
+      //     return product;
+      //   }
+      // });
+
+      // TODO: delete setWishListProducts and after this mutaion is success change and setQuery [wishlist] with newProducts
+      setLastWishlist([]);
+    }
+  }, [wishList]);
 
   useEffect(() => {
     refetch(token);
   }, [refetch]);
-
-  async function addToCart(id) {
-    await addToCardHook(id);
-  }
-
-  async function deleteProductFromWishList(id) {
-    const data = await deleteFromWishList(id);
-
-    if (data) {
-      const newProducts = wishListProducts.filter((product) => {
-        if (data.includes(product.id)) {
-          return product;
-        }
-      });
-      // TODO: delete setWishListProducts and after this mutaion is success change and setQuery [wishlist] with newProducts
-      setLastWishlist(newProducts);
-    }
-  }
 
   let ui =
     lastWishlist?.length > 0 ? (
@@ -87,7 +77,7 @@ export default function WishList() {
                   <button
                     className="btn border-0 ps-0 text-danger"
                     onClick={() => {
-                      deleteProductFromWishList(id);
+                      deleteFromWishList(id);
                     }}
                   >
                     <FontAwesomeIcon icon={faTrash} /> remove
@@ -98,7 +88,7 @@ export default function WishList() {
                     style={{ minWidth: "64px" }}
                     className="btn btn-outline-main"
                     onClick={() => {
-                      addToCart(id);
+                      addToCardHook(id);
                     }}
                   >
                     <span className="d-none d-lg-inline-block text-nowrap">

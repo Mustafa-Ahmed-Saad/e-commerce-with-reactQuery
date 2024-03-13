@@ -17,7 +17,10 @@ export default function NewLoading() {
   const display = isFetching || isMutating ? "flex" : "none";
 
   const isBrandIsFetching = useIsFetching(queryKeys.brand);
-  const isWishlistMutating = useIsMutating(mutationKeys.love); // handelLoveHook (when click love icon)
+  const isWishlistMutating = useIsMutating(mutationKeys.handelLove); // handelLoveHook (when click love icon)
+  const isAddToCardMutating = useIsMutating(mutationKeys.addToCard); // handelLoveHook (when click love icon)
+  const isDeleteFromWishList = useIsMutating(mutationKeys.deleteFromWishList); // handelLoveHook (when click love icon)
+  const isDeleteFromCart = useIsMutating(mutationKeys.deleteFromCart); // handelLoveHook (when click love icon)
 
   // brand loading (query)
   if (isBrandIsFetching) {
@@ -25,7 +28,12 @@ export default function NewLoading() {
   }
 
   // love loading (mutaion)
-  if (isWishlistMutating) {
+  if (
+    isWishlistMutating ||
+    isAddToCardMutating ||
+    isDeleteFromWishList ||
+    isDeleteFromCart
+  ) {
     return;
   }
 

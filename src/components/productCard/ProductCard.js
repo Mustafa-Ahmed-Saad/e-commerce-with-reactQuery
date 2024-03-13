@@ -19,10 +19,6 @@ export default function ProductCard({ product, index }) {
   const handelLoveHook = useHandelLoveHook();
   const { addToCardHook } = useAddToCardHook();
 
-  async function addToCart(id) {
-    await addToCardHook(id);
-  }
-
   function goToProduct(e, id) {
     const targetElement = e.target;
 
@@ -105,7 +101,7 @@ export default function ProductCard({ product, index }) {
               <Button
                 variant="btn btn-main me-auto d-inline-block w-75 me-2 addToCart"
                 onClick={() => {
-                  addToCart(product.id);
+                  addToCardHook(product.id);
                 }}
               >
                 + add

@@ -8,60 +8,9 @@ import Cookies from "js-cookie";
 import { useState } from "react";
 import { mutationKeys, queryKeys } from "../constant";
 import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useUpdateCart } from "./updateCart";
 
 // TODO: out all async function in fun hook
-
-export function useDeleteFromCart() {
-  const { token, setProductsCounter, productsQuantity, setProductsQuantity } =
-    useContextMain();
-
-  const deleteFromCart = async (id) => {
-    let tLoading = notify("loading", `loading...`);
-    const [data, errorMessage] = await deleteData(`/api/v1/cart/${id}`, {
-      headers: { token: token },
-    });
-
-    if (data?.data) {
-      toast.dismiss(tLoading);
-      notify("success", "product deleted successfully from cart");
-      setProductsCounter((prev) => prev - 1);
-      const pq = { ...productsQuantity };
-      delete pq[id];
-      setProductsQuantity(pq);
-      return data.data;
-    } else {
-      toast.dismiss(tLoading);
-      notify("error", `Opps ${errorMessage}`);
-      return { products: [], totalCartPrice: 0, myError: errorMessage };
-    }
-  };
-
-  return {
-    deleteFromCart,
-  };
-}
-
-export function useClearAllProductsCart() {
-  const { token, setProductsCounter } = useContextMain();
-
-  const clearAllProductsCart = async () => {
-    const [data, errorMessage] = await deleteData(`/api/v1/cart`, {
-      headers: { token: token },
-    });
-
-    if (data?.message === "success") {
-      setProductsCounter(0);
-      return "done";
-    } else {
-      // TODO: show tost
-      console.error(errorMessage);
-    }
-  };
-
-  return {
-    clearAllProductsCart,
-  };
-}
 
 export function useUpdateQuantity() {
   const { token, setProductsCounter } = useContextMain();
@@ -215,42 +164,6 @@ export function useLoginHook() {
   };
 }
 
-export function useAddToCardHook() {
-  const { wishList, setProductsCounter, token } = useContextMain();
-
-  const addToCardHook = async (id) => {
-    let tLoading = notify("loading", `loading...`);
-    const [data, errorMessage] = await postData(
-      "/api/v1/cart",
-      {
-        productId: id,
-      },
-      {
-        headers: {
-          token: token,
-        },
-      }
-    );
-
-    if (data?.data?.products) {
-      // make like wishList an create context for product cart and set this peoduct context from here
-      toast.dismiss(tLoading);
-      notify("success", `${data.message}`);
-      // here also return totalprice in (data?.data?.totalCartPrice)
-      setProductsCounter(data.data.products.length);
-      return "done";
-    } else {
-      toast.dismiss(tLoading);
-      notify("error", `Opps ${errorMessage}`);
-      console.error(errorMessage);
-    }
-  };
-
-  return {
-    addToCardHook,
-  };
-}
-
 export function useVerifyCodeHook() {
   const navigate = useNavigate();
 
@@ -278,6 +191,140 @@ export function useVerifyCodeHook() {
 // .......................... mutations ..............................
 // ....................................................................
 
+export function useClearAllProductsCart() {
+  const { token, setProductsCounter } = useContextMain();
+  let tLoading;
+
+  const clearAllProductsCart = async () => {
+    tLoading = notify("loading", `loading...`);
+    const data = await axiosInstance.delete(`/api/v1/cart`, {
+      headers: { token: token },
+    });
+
+    return data;
+  };
+
+  const updateCart = useUpdateCart();
+
+  const { mutate } = useMutation({
+    mutationFn: clearAllProductsCart,
+    mutationKey: [mutationKeys.clearAllProductsCart],
+    onSuccess: () => {
+      toast.dismiss(tLoading);
+      notify("success", "clear All products successfully");
+      setProductsCounter(0);
+      updateCart([], 0);
+    },
+    onError: (error) => {
+      toast.dismiss(tLoading);
+      notify("error", `Opps ${error.message}`);
+      console.error(error.message);
+    },
+  });
+
+  return {
+    clearAllProductsCart: mutate,
+  };
+}
+
+export function useDeleteFromCart() {
+  const { token, setProductsCounter, productsQuantity, setProductsQuantity } =
+    useContextMain();
+  let tLoading;
+
+  const deleteFromCart = async (id) => {
+    tLoading = notify("loading", `loading...`);
+    const data = await axiosInstance.delete(`/api/v1/cart/${id}`, {
+      headers: { token: token },
+    });
+
+    return data?.data;
+  };
+
+  const updateCart = useUpdateCart();
+
+  const { mutate } = useMutation({
+    mutationFn: (variables) => deleteFromCart(variables.id),
+    mutationKey: [mutationKeys.deleteFromCart],
+    onSuccess: ({ data }, variables) => {
+      toast.dismiss(tLoading);
+      notify("success", "product deleted successfully from cart");
+      setProductsCounter((prev) => prev - 1);
+      const pq = { ...productsQuantity };
+      delete pq[data._id];
+      setProductsQuantity(pq);
+      updateCart(data.products, data.totalCartPrice);
+    },
+    onError: (error, variables) => {
+      toast.dismiss(tLoading);
+      notify("error", `Opps ${error.message}`);
+
+      if (variables.oldQuantity) {
+        const nProducts = [...variables.allProductsInCart];
+        nProducts[variables.index].count = variables.oldQuantity;
+        updateCart(nProducts, 0);
+      }
+    },
+  });
+
+  return {
+    deleteFromCart: mutate,
+  };
+}
+
+export function useAddToCardHook() {
+  const { setProductsCounter, token } = useContextMain();
+  let tLoading;
+
+  const addToCardHook = async (id) => {
+    tLoading = notify("loading", `loading...`);
+
+    const data = await axiosInstance.post(
+      "/api/v1/cart",
+      {
+        productId: id,
+      },
+      {
+        headers: {
+          token: token,
+        },
+      }
+    );
+
+    return data?.data?.data;
+  };
+
+  const queryClient = useQueryClient();
+
+  const { mutate } = useMutation((id) => addToCardHook(id), {
+    mutationKey: [mutationKeys.addToCard],
+    onSuccess: (data) => {
+      const oldCartProducts = queryClient.getQueryData(queryKeys.cart);
+      if (oldCartProducts) {
+        queryClient.setQueryData(queryKeys.cart, {
+          ...oldCartProducts,
+          products: data.products,
+        });
+      }
+      // make like wishList an create context for product cart and set this peoduct context from here
+      toast.dismiss(tLoading);
+      notify("success", "product successfully added to cart");
+      // here also return totalprice in (data?.data?.totalCartPrice)
+      setProductsCounter(data.products.length);
+      // return "done";
+    },
+    onError: (error) => {
+      toast.dismiss(tLoading);
+      notify("error", `Opps ${error.message}`);
+      console.error(error.message);
+    },
+  });
+
+  return {
+    addToCardHook: mutate,
+  };
+}
+
 export function useDeleteFromWishList() {
   const { token, setWishList } = useContextMain();
   // let tLoading = notify("loading", `loading...`);
@@ -298,13 +345,13 @@ export function useDeleteFromWishList() {
     mutationKey: [mutationKeys.deleteFromWishList],
     onSuccess: (data) => {
       const oldWishListProducts = queryClient.getQueryData(queryKeys.wishList);
-      // filter this array and rturn only when ids match
       const newWishListProducts = oldWishListProducts.filter(
         (product) => data.includes(product._id) || data.includes(product.id)
       );
+
       queryClient.setQueryData(queryKeys.wishList, newWishListProducts);
-      // queryClient.setQueryData(queryKeys.wishList, data);
       queryClient.setQueryData(queryKeys.wishListProductIds, data);
+
       setWishList(data);
       toast.dismiss(tLoading);
       notify("success", `Deleted successfully`);
@@ -352,7 +399,7 @@ export function useHandelLoveHook() {
 
   // mutate function
   const { mutate } = useMutation((id) => handelLoveHook(id), {
-    mutationKey: [mutationKeys.love],
+    mutationKey: [mutationKeys.handelLove],
     onSuccess: (data) => {
       if (data === ExistInWishlist) {
         return;
