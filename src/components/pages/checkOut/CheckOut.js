@@ -6,7 +6,6 @@ import {
   useCashPayment,
 } from "../../../helper/hooks/asyncFunction";
 import { checkOutValidationSchema } from "../../../validation/validation";
-import { useContextMain } from "./../../../contexts/MainContext";
 
 export default function CheckOut() {
   //   get cart id
@@ -14,13 +13,14 @@ export default function CheckOut() {
   const { cashPayment } = useCashPayment();
   const { cardPayment } = useCardPayment();
 
-  async function submit(formData) {
+  function submit(formData) {
+    const info = { id, formData };
     if (formData.payment === "cash") {
       // cash payment
-      await cashPayment(id, formData);
+      cashPayment(info);
     } else {
       // card payment
-      await cardPayment(id, formData);
+      cardPayment(info);
     }
   }
 

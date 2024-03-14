@@ -21,6 +21,9 @@ export default function NewLoading() {
   const isAddToCardMutating = useIsMutating(mutationKeys.addToCard); // handelLoveHook (when click love icon)
   const isDeleteFromWishList = useIsMutating(mutationKeys.deleteFromWishList); // handelLoveHook (when click love icon)
   const isDeleteFromCart = useIsMutating(mutationKeys.deleteFromCart); // handelLoveHook (when click love icon)
+  const isClearAllProductsCart = useIsMutating(
+    mutationKeys.clearAllProductsCart
+  ); // handelLoveHook (when click love icon)
 
   // brand loading (query)
   if (isBrandIsFetching) {
@@ -32,7 +35,8 @@ export default function NewLoading() {
     isWishlistMutating ||
     isAddToCardMutating ||
     isDeleteFromWishList ||
-    isDeleteFromCart
+    isDeleteFromCart ||
+    isClearAllProductsCart
   ) {
     return;
   }

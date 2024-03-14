@@ -1,4 +1,4 @@
-import { axiosInstance, deleteData, postData, putData } from "../api";
+import { axiosInstance, postData } from "../api";
 import { useContextMain } from "../../contexts/MainContext";
 import { toast } from "react-hot-toast";
 import { notify } from "../toastFire";
@@ -11,100 +11,6 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useUpdateCart } from "./updateCart";
 
 // TODO: out all async function in fun hook
-
-export function useUpdateQuantity() {
-  const { token, setProductsCounter } = useContextMain();
-
-  const updateQuantity = async (productId, count) => {
-    let tLoading = notify("loading", `loading...`);
-    const [data, errorMessage] = await putData(
-      `/api/v1/cart/${productId}`,
-      {
-        count,
-      },
-      {
-        headers: {
-          token: token,
-        },
-      }
-    );
-
-    if (data?.data) {
-      toast.dismiss(tLoading);
-      notify("success", "Successfully");
-      return {
-        products: data?.data.products,
-        totalCartPrice: data.data.totalCartPrice,
-      };
-    } else {
-      toast.dismiss(tLoading);
-      notify("error", `Opps ${errorMessage}`);
-      console.error(errorMessage);
-    }
-  };
-
-  return {
-    updateQuantity,
-  };
-}
-
-export function useCashPayment() {
-  const { token } = useContextMain();
-  const navigate = useNavigate();
-
-  const cashPayment = async (id, formData) => {
-    delete formData.payment;
-    const [data, errorMessage] = await postData(
-      `/api/v1/orders/${id}`,
-      formData,
-      {
-        headers: { token: token },
-      }
-    );
-
-    if (data?.status === "success") {
-      navigate("/allorders");
-      return "done";
-    } else {
-      console.error(errorMessage);
-    }
-  };
-
-  return {
-    cashPayment,
-  };
-}
-
-export function useCardPayment() {
-  const { token } = useContextMain();
-
-  const cardPayment = async (id, formData) => {
-    delete formData.payment;
-    const [data, errorMessage] = await postData(
-      `/api/v1/orders/checkout-session/${id}`,
-      formData,
-      {
-        headers: { token: token },
-        params: {
-          url: "https://mustafa-ahmed-saad.github.io/e-commerce/#",
-        },
-      }
-    );
-
-    if (data?.session) {
-      window.location.href = data?.session?.url;
-      // or use
-      // window.open(data?.session?.url, '_blank');
-      return "done";
-    } else {
-      console.error(errorMessage);
-    }
-  };
-
-  return {
-    cardPayment,
-  };
-}
 
 export function useForgetPassword() {
   const navigate = useNavigate();
@@ -190,6 +96,204 @@ export function useVerifyCodeHook() {
 // ....................................................................
 // .......................... mutations ..............................
 // ....................................................................
+
+// export function useUpdateQuantity() {
+//   const { token, setProductsCounter } = useContextMain();
+
+//   const updateQuantity = async (productId, count) => {
+//     let tLoading = notify("loading", `loading...`);
+//     const [data, errorMessage] = await putData(
+//       `/api/v1/cart/${productId}`,
+//       {
+//         count,
+//       },
+//       {
+//         headers: {
+//           token: token,
+//         },
+//       }
+//     );
+
+//     if (data?.data) {
+//       toast.dismiss(tLoading);
+//       notify("success", "Successfully");
+//       return {
+//         products: data?.data.products,
+//         totalCartPrice: data.data.totalCartPrice,
+//       };
+//     } else {
+//       toast.dismiss(tLoading);
+//       notify("error", `Opps ${errorMessage}`);
+//       console.error(errorMessage);
+//     }
+//   };
+
+//   return {
+//     updateQuantity,
+//   };
+// }
+
+export function useUpdateQuantity() {
+  const { token, productsQuantity, setProductsQuantity } = useContextMain();
+  let tLoading;
+
+  const updateQuantity = async (info) => {
+    tLoading = notify("loading", `loading...`);
+    const { productId, count } = info;
+    const data = await axiosInstance.put(
+      `/api/v1/cart/${productId}`,
+      {
+        count,
+      },
+      {
+        headers: {
+          token: token,
+        },
+      }
+    );
+
+    return data?.data;
+  };
+
+  const updateCart = useUpdateCart();
+
+  const { mutate } = useMutation({
+    mutationFn: updateQuantity,
+    onSuccess: (data, info) => {
+      toast.dismiss(tLoading);
+      notify("success", "Successfully");
+
+      updateCart(data.data.products, data.data.totalCartPrice);
+
+      const oldQuantity = { ...productsQuantity };
+      oldQuantity[info.productId] = info.count;
+      setProductsQuantity(oldQuantity);
+    },
+    onError: (error, info) => {
+      const { productId, allProductsInCart, index } = info;
+      toast.dismiss(tLoading);
+      notify("error", `Opps ${error.message}`);
+
+      const newProducts = [...allProductsInCart];
+      newProducts[index].count = productsQuantity[productId];
+
+      const totalPrice = newProducts.reduce(
+        (prev, product) => prev + product.count * product.price,
+        0
+      );
+
+      updateCart(newProducts, totalPrice);
+
+      // queryClient.invalidateQueries(queryKeys.cart);
+
+      console.error(error.message);
+    },
+  });
+
+  return {
+    updateQuantity: mutate,
+  };
+}
+
+export function useCardPayment() {
+  const { token } = useContextMain();
+  let tLoading;
+
+  const cardPayment = async (info) => {
+    const { id, formData } = info;
+    tLoading = notify("loading", `loading...`);
+    delete formData.payment;
+    const data = await axiosInstance.post(
+      `/api/v1/orders/checkout-session/${id}`,
+      formData,
+      {
+        headers: { token: token },
+        params: {
+          url: "https://mustafa-ahmed-saad.github.io/e-commerce/#",
+        },
+      }
+    );
+    // after credit card payment will redirect to "https://mustafa-ahmed-saad.github.io/e-commerce/#/allorders" automatically
+    // i passed this as parameter https://mustafa-ahmed-saad.github.io/e-commerce/# and allorders strapi increase it to url
+
+    return data?.data;
+  };
+
+  const queryClient = useQueryClient();
+
+  const { mutate } = useMutation({
+    mutationFn: cardPayment,
+    mutationKey: [mutationKeys.cardPayment],
+    onSuccess: (data) => {
+      toast.dismiss(tLoading);
+      const oldCartProducts = queryClient.getQueryData(queryKeys.cart);
+      queryClient.setQueryData(queryKeys.cart, {
+        ...oldCartProducts,
+        products: [],
+      });
+      queryClient.invalidateQueries(queryKeys.orders);
+      window.location.href = data?.session?.url;
+      // or use
+      // window.open(data?.session?.url, '_blank');
+      // return "done";
+    },
+    onError: (error) => {
+      toast.dismiss(tLoading);
+      notify("error", `Opps ${error.message}`);
+      console.error(error.message);
+    },
+  });
+
+  return {
+    cardPayment: mutate,
+  };
+}
+
+export function useCashPayment() {
+  const { token } = useContextMain();
+  const navigate = useNavigate();
+  let tLoading;
+
+  const cashPayment = async (info) => {
+    const { id, formData } = info;
+    tLoading = notify("loading", `loading...`);
+    delete formData.payment;
+    const data = await axiosInstance.post(`/api/v1/orders/${id}`, formData, {
+      headers: { token: token },
+    });
+
+    return data;
+  };
+
+  const queryClient = useQueryClient();
+
+  const { mutate } = useMutation({
+    mutationFn: cashPayment,
+    mutationKey: [mutationKeys.cashPayment],
+    onSuccess: () => {
+      // queryClient.invalidateQueries(queryKeys.cart, queryKeys.orders);
+      const oldCartProducts = queryClient.getQueryData(queryKeys.cart);
+      queryClient.setQueryData(queryKeys.cart, {
+        ...oldCartProducts,
+        products: [],
+      });
+      queryClient.invalidateQueries(queryKeys.orders);
+      navigate("/allorders");
+      toast.dismiss(tLoading);
+      notify("success", "order successfully created");
+      // return "done";
+    },
+    onError: (error) => {
+      toast.dismiss(tLoading);
+      notify("error", `Opps ${error.message}`);
+      console.error(error.message);
+    },
+  });
+
+  return {
+    cashPayment: mutate,
+  };
+}
 
 export function useClearAllProductsCart() {
   const { token, setProductsCounter } = useContextMain();
@@ -411,7 +515,7 @@ export function useHandelLoveHook() {
       setWishList(data?.data);
     },
     onError: (error) => {
-      console.log("error", error);
+      console.error("error", error.message);
       toast.dismiss(tLoading);
       notify("error", `Opps something went wrong ${error.message}`);
     },

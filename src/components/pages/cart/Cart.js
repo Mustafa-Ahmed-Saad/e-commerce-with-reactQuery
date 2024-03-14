@@ -15,8 +15,7 @@ import Loading from "../../locading/Loading";
 import { useUpdateCart } from "../../../helper/hooks/updateCart";
 
 export default function Cart() {
-  const { productsCounter, productsQuantity, setProductsQuantity } =
-    useContextMain();
+  const { productsCounter, productsQuantity } = useContextMain();
 
   const { clearAllProductsCart } = useClearAllProductsCart();
   const { updateQuantity } = useUpdateQuantity();
@@ -67,26 +66,13 @@ export default function Cart() {
         if (count <= 0) {
           deleteProductFromCart(productId, index, productsQuantity[productId]);
         } else {
-          const data = await updateQuantity(productId, count);
-
-          if (data) {
-            // setTotalCartPrice(data.totalCartPrice);
-            updateCart(data.products, data.totalCartPrice);
-
-            // setAllProductsInCart(data.products);
-            // TODO: check it ishow setProductsCounter here or not
-            // setProductsCounter(data?.numOfCartItems);
-            // TODO: delete local storage of productsQuantity after chick out
-            const oldQuantity = { ...productsQuantity };
-            oldQuantity[productId] = count;
-            setProductsQuantity(oldQuantity);
-          } else {
-            const newProducts = [...allProductsInCart];
-            newProducts[index].count = productsQuantity[productId];
-            updateCart(newProducts, 0);
-
-            // setAllProductsInCart(newProducts);
-          }
+          const info = {
+            productId,
+            count,
+            allProductsInCart,
+            index,
+          };
+          updateQuantity(info);
         }
       }, 1000)
     );

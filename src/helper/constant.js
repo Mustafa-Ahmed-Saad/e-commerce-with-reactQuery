@@ -18,4 +18,6 @@ export const mutationKeys = {
   addToCard: "addToCard",
   deleteFromCart: "deleteFromCart",
   clearAllProductsCart: "clearAllProductsCart",
+  cashPayment: "cashPayment",
+  cardPayment: "cardPayment",
 };
