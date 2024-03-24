@@ -20,4 +20,7 @@ export const mutationKeys = {
   clearAllProductsCart: "clearAllProductsCart",
   cashPayment: "cashPayment",
   cardPayment: "cardPayment",
+  updateQuantity: "updateQuantity",
+  login: "login",
+  forgetPassword: "forgetPassword",
 };

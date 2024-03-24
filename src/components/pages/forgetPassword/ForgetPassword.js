@@ -24,19 +24,8 @@ export default function ForgetPassword() {
       clearTimeout(alertInterval);
     }
 
-    const data = await forgetPassword(value);
-
-    if (data?.statusMsg === "success") {
-      setShowAlert(false);
-      navigate("/verify-code");
-    } else {
-      setShowAlert(data.errorMessage);
-      setAlertInterval(
-        setTimeout(() => {
-          setShowAlert(false);
-        }, 7000)
-      );
-    }
+    const obj = { value, setShowAlert, setAlertInterval };
+    forgetPassword(obj);
   }
 
   const formik = useFormik({

@@ -16,8 +16,8 @@ export default function Login() {
     }
   }, []);
 
-  async function submit(values) {
-    await loginHook(values);
+  function submit(values) {
+    loginHook(values);
   }
 
   function handelForgetPassword(e) {

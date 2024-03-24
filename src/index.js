@@ -12,6 +12,7 @@ import { QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
 import { queryClient } from "./helper/queryClient";
 import NewLoading from "./components/NewLoading/NewLoading";
+import MyToster from "./components/toster/MyToster";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
@@ -20,6 +21,7 @@ root.render(
   <QueryClientProvider client={queryClient}>
     <MainContextProvider>
       <NewLoading />
+      <MyToster />
       <App />
     </MainContextProvider>
 

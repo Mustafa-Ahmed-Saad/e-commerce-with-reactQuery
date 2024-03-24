@@ -24,10 +24,5 @@ export default function ProtectedRoute({ children }) {
     );
   }
 
-  return (
-    <>
-      {ui}
-      <MyToster />
-    </>
-  );
+  return <>{ui}</>;
 }

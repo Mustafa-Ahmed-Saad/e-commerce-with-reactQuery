@@ -18,12 +18,14 @@ export default function NewLoading() {
 
   const isBrandIsFetching = useIsFetching(queryKeys.brand);
   const isWishlistMutating = useIsMutating(mutationKeys.handelLove); // handelLoveHook (when click love icon)
-  const isAddToCardMutating = useIsMutating(mutationKeys.addToCard); // handelLoveHook (when click love icon)
-  const isDeleteFromWishList = useIsMutating(mutationKeys.deleteFromWishList); // handelLoveHook (when click love icon)
-  const isDeleteFromCart = useIsMutating(mutationKeys.deleteFromCart); // handelLoveHook (when click love icon)
+  const isAddToCardMutating = useIsMutating(mutationKeys.addToCard);
+  const isDeleteFromWishList = useIsMutating(mutationKeys.deleteFromWishList);
+  const isDeleteFromCart = useIsMutating(mutationKeys.deleteFromCart);
   const isClearAllProductsCart = useIsMutating(
     mutationKeys.clearAllProductsCart
-  ); // handelLoveHook (when click love icon)
+  );
+  const isUpdateQuantity = useIsMutating(mutationKeys.updateQuantity);
+  const isLogin = useIsMutating(mutationKeys.login);
 
   // brand loading (query)
   if (isBrandIsFetching) {
@@ -31,12 +33,15 @@ export default function NewLoading() {
   }
 
   // love loading (mutaion)
+  // no main loading
   if (
     isWishlistMutating ||
     isAddToCardMutating ||
     isDeleteFromWishList ||
     isDeleteFromCart ||
-    isClearAllProductsCart
+    isClearAllProductsCart ||
+    isUpdateQuantity ||
+    isLogin
   ) {
     return;
   }

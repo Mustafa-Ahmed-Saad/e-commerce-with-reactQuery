@@ -12,63 +12,7 @@ import { useUpdateCart } from "./updateCart";
 
 // TODO: out all async function in fun hook
 
-export function useForgetPassword() {
-  const navigate = useNavigate();
-
-  const forgetPassword = async (value) => {
-    const [data, errorMessage] = await postData(
-      "/api/v1/auth/forgotPasswords",
-      value
-    );
-
-    if (data?.statusMsg === "success") {
-      navigate("/verify-code");
-      return {
-        statusMsg: "success",
-      };
-    } else {
-      console.error(errorMessage || data?.message);
-      return { errorMessage: errorMessage || data?.message };
-    }
-  };
-
-  return {
-    forgetPassword,
-  };
-}
-
-export function useLoginHook() {
-  const { setToken } = useContextMain();
-  const navigate = useNavigate();
-
-  const loginHook = async (values) => {
-    const [data, errorMessage] = await postData("/api/v1/auth/signin", values);
-
-    if (data?.token) {
-      //  decode token
-      const decoded = jwt_decode(data.token);
-      // Get the current timestamp in seconds
-      const currentTimestamp = Math.floor(Date.now() / 1000);
-      // Calculate the difference between expiration and current timestamps
-      const timeDifferenceSeconds = decoded.exp - currentTimestamp;
-      // Calculate the time difference in days
-      const timeDifferenceDays = Math.ceil(
-        timeDifferenceSeconds / (60 * 60 * 24)
-      );
-      Cookies.set("token", data.token, { expires: timeDifferenceDays }); // Expires in ... days
-      setToken(data.token);
-      navigate("/home");
-      return "done";
-    } else {
-      // TODO: handel Error here
-      console.error(errorMessage);
-    }
-  };
-
-  return {
-    loginHook,
-  };
-}
+// TODO: create Register Hook
 
 export function useVerifyCodeHook() {
   const navigate = useNavigate();
@@ -97,41 +41,100 @@ export function useVerifyCodeHook() {
 // .......................... mutations ..............................
 // ....................................................................
 
-// export function useUpdateQuantity() {
-//   const { token, setProductsCounter } = useContextMain();
+export function useForgetPassword() {
+  const navigate = useNavigate();
 
-//   const updateQuantity = async (productId, count) => {
-//     let tLoading = notify("loading", `loading...`);
-//     const [data, errorMessage] = await putData(
-//       `/api/v1/cart/${productId}`,
-//       {
-//         count,
-//       },
-//       {
-//         headers: {
-//           token: token,
-//         },
-//       }
-//     );
+  const forgetPassword = async ({ value }) => {
+    const data = await axiosInstance.post(
+      "/api/v1/auth/forgotPasswords",
+      value
+    );
 
-//     if (data?.data) {
-//       toast.dismiss(tLoading);
-//       notify("success", "Successfully");
-//       return {
-//         products: data?.data.products,
-//         totalCartPrice: data.data.totalCartPrice,
-//       };
-//     } else {
-//       toast.dismiss(tLoading);
-//       notify("error", `Opps ${errorMessage}`);
-//       console.error(errorMessage);
-//     }
-//   };
+    return data?.data;
+  };
 
-//   return {
-//     updateQuantity,
-//   };
-// }
+  const { mutate } = useMutation({
+    mutationFn: forgetPassword,
+    mutationKey: [mutationKeys.forgetPassword],
+    onSuccess: (data, { setShowAlert, setAlertInterval }) => {
+      if (data.statusMsg === "success") {
+        navigate("/verify-code");
+        setShowAlert(false);
+      } else if (data.message) {
+        notify("error", `${data.message}`);
+        setShowAlert(data.message);
+        setAlertInterval(
+          setTimeout(() => {
+            setShowAlert(false);
+          }, 7000)
+        );
+      }
+    },
+    onError: (error, { setShowAlert, setAlertInterval }) => {
+      notify("error", `Opps ${error.message}`);
+      setShowAlert(
+        `${error.message} or no user registered with this email address`
+      );
+      setAlertInterval(
+        setTimeout(() => {
+          setShowAlert(false);
+        }, 7000)
+      );
+
+      console.error("error", error.message);
+    },
+  });
+
+  return {
+    forgetPassword: mutate,
+  };
+}
+
+export function useLoginHook() {
+  const { setToken } = useContextMain();
+  const navigate = useNavigate();
+
+  const loginHook = async (values) => {
+    const data = await axiosInstance.post("/api/v1/auth/signin", values);
+
+    return data?.data;
+  };
+
+  const queryClient = useQueryClient();
+
+  const { mutate } = useMutation({
+    mutationFn: loginHook,
+    mutationKey: [mutationKeys.login],
+    onSuccess: (data) => {
+      //  decode token
+      const decoded = jwt_decode(data.token);
+      // Get the current timestamp in seconds
+      const currentTimestamp = Math.floor(Date.now() / 1000);
+      // Calculate the difference between expiration and current timestamps
+      const timeDifferenceSeconds = decoded.exp - currentTimestamp;
+      // Calculate the time difference in days
+      const timeDifferenceDays = Math.ceil(
+        timeDifferenceSeconds / (60 * 60 * 24)
+      );
+      Cookies.set("token", data.token, { expires: timeDifferenceDays }); // Expires in ... days
+      setToken(data.token);
+      queryClient.invalidateQueries(queryKeys.wishList);
+      queryClient.invalidateQueries(queryKeys.orders);
+      queryClient.invalidateQueries(queryKeys.cart);
+      // queryClient.invalidateQueries(queryKeys.userId);
+
+      navigate("/home");
+    },
+    onError: (error) => {
+      notify("error", `Opps ${error.message}`);
+      console.error(error.message);
+    },
+  });
+
+  return {
+    loginHook: mutate,
+  };
+}
 
 export function useUpdateQuantity() {
   const { token, productsQuantity, setProductsQuantity } = useContextMain();
@@ -159,6 +162,7 @@ export function useUpdateQuantity() {
 
   const { mutate } = useMutation({
     mutationFn: updateQuantity,
+    mutationKey: [mutationKeys.updateQuantity],
     onSuccess: (data, info) => {
       toast.dismiss(tLoading);
       notify("success", "Successfully");
