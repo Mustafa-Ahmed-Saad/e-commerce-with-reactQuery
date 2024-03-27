@@ -26,14 +26,9 @@ export default function VerifyCode() {
     }, 7000);
   }, [showAlert]);
 
-  async function submit(value) {
-    const data = await verifyCodeHook(value);
-
-    if (data.status === "Success") {
-      setShowAlert(false);
-    } else {
-      setShowAlert(data.errorMessage);
-    }
+  function submit(value) {
+    const obj = { value, setShowAlert };
+    verifyCodeHook(obj);
   }
 
   const formik = useFormik({

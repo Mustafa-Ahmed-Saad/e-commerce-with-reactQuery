@@ -12,10 +12,10 @@ import Cookies from "js-cookie";
 import { useContextMain } from "../../contexts/MainContext";
 import ToggleModeCheck from "../toggleModeCheck/ToggleModeCheck";
 import { useRef } from "react";
+import { useLogOutHook } from "../../helper/hooks/asyncFunction";
 
 export default function MainNavbar() {
-  const { token, setToken, productsCounter, mode, setMode, mainColor } =
-    useContextMain();
+  const { token, productsCounter, mode, setMode, mainColor } = useContextMain();
 
   const [isScrolled, setIsScrolled] = useState(false);
   const [isScrollDown, setIsScrollDown] = useState(false);
@@ -23,11 +23,7 @@ export default function MainNavbar() {
 
   const inputRef = useRef(); // Step 1: Create a ref
 
-  function handelLogOut() {
-    Cookies.remove("token");
-    setToken(false);
-    localStorage.clear();
-  }
+  const { logOut } = useLogOutHook();
 
   function toggleMode(isChicked) {
     const htmlTag = document.documentElement;
@@ -222,7 +218,7 @@ export default function MainNavbar() {
                     className="nav-link fw-bold"
                     aria-current="page"
                     to="/login"
-                    onClick={handelLogOut}
+                    onClick={logOut}
                   >
                     log out
                   </NavLink>

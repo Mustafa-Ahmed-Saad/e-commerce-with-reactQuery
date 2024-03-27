@@ -1,4 +1,4 @@
-import { axiosInstance, postData } from "../api";
+import { axiosInstance } from "../api";
 import { useContextMain } from "../../contexts/MainContext";
 import { toast } from "react-hot-toast";
 import { notify } from "../toastFire";
@@ -14,32 +14,59 @@ import { useUpdateCart } from "./updateCart";
 
 // TODO: create Register Hook
 
-export function useVerifyCodeHook() {
-  const navigate = useNavigate();
+export function useLogOutHook() {
+  const { setToken } = useContextMain();
+  const queryClient = useQueryClient();
 
-  const verifyCodeHook = async (value) => {
-    const [data, errorMessage] = await postData(
-      "/api/v1/auth/verifyResetCode",
-      value
-    );
+  const logOut = () => {
+    Cookies.remove("token");
+    setToken(false);
+    localStorage.clear();
 
-    if (data?.status === "Success") {
-      navigate("/reset-password");
-      return { status: "Success" };
-    } else {
-      console.error(errorMessage || data?.message);
-      return { errorMessage: errorMessage || data?.message };
-    }
+    queryClient.clear();
   };
 
-  return {
-    verifyCodeHook,
-  };
+  return { logOut };
 }
 
 // ....................................................................
 // .......................... mutations ..............................
 // ....................................................................
+
+export function useVerifyCodeHook() {
+  const navigate = useNavigate();
+
+  const verifyCodeHook = async ({ value }) => {
+    const data = await axiosInstance.post(
+      "/api/v1/auth/verifyResetCode",
+      value
+    );
+
+    return data?.data;
+  };
+
+  const { mutate } = useMutation({
+    mutationFn: verifyCodeHook,
+    mutationKey: [mutationKeys.verifyCodeHook],
+    onSuccess: (data, { setShowAlert }) => {
+      if (data?.status === "Success") {
+        navigate("/reset-password");
+        setShowAlert(false);
+      } else if (data?.message) {
+        notify("error", `${data?.message}`);
+        setShowAlert(data?.message);
+      }
+    },
+    onError: (error, { setShowAlert }) => {
+      notify("error", `Opps ${error.message}`);
+      setShowAlert(error.message);
+    },
+  });
+
+  return {
+    verifyCodeHook: mutate,
+  };
+}
 
 export function useForgetPassword() {
   const navigate = useNavigate();
