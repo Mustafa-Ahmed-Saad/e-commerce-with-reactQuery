@@ -33,6 +33,33 @@ export function useLogOutHook() {
 // .......................... mutations ..............................
 // ....................................................................
 
+export function useRegisterHook() {
+  const navigate = useNavigate();
+
+  const registerHook = async (values) => {
+    const data = await axiosInstance.post("/api/v1/auth/signup", values);
+    return data?.data;
+  };
+
+  const { mutate } = useMutation({
+    mutationFn: registerHook,
+    mutationKey: [mutationKeys.register],
+    onSuccess: (data) => {
+      console.log("ggggggggggggggggggggoooooooooooddddddd", data);
+      if (data?.token) {
+        navigate("/login");
+      }
+    },
+    onError: (error, x, y, z) => {
+      notify("error", `Opps ${error.response?.data?.message || error.message}`);
+    },
+  });
+
+  return {
+    registerHook: mutate,
+  };
+}
+
 export function useVerifyCodeHook() {
   const navigate = useNavigate();
 
@@ -58,7 +85,7 @@ export function useVerifyCodeHook() {
       }
     },
     onError: (error, { setShowAlert }) => {
-      notify("error", `Opps ${error.message}`);
+      notify("error", `Opps ${error.response?.data?.message || error.message}`);
       setShowAlert(error.message);
     },
   });
@@ -98,7 +125,7 @@ export function useForgetPassword() {
       }
     },
     onError: (error, { setShowAlert, setAlertInterval }) => {
-      notify("error", `Opps ${error.message}`);
+      notify("error", `Opps ${error.response?.data?.message || error.message}`);
       setShowAlert(
         `${error.message} or no user registered with this email address`
       );
@@ -107,8 +134,6 @@ export function useForgetPassword() {
           setShowAlert(false);
         }, 7000)
       );
-
-      console.error("error", error.message);
     },
   });
 
@@ -153,8 +178,7 @@ export function useLoginHook() {
       navigate("/home");
     },
     onError: (error) => {
-      notify("error", `Opps ${error.message}`);
-      console.error(error.message);
+      notify("error", `Opps ${error.response?.data?.message || error.message}`);
     },
   });
 
@@ -203,7 +227,7 @@ export function useUpdateQuantity() {
     onError: (error, info) => {
       const { productId, allProductsInCart, index } = info;
       toast.dismiss(tLoading);
-      notify("error", `Opps ${error.message}`);
+      notify("error", `Opps ${error.response?.data?.message || error.message}`);
 
       const newProducts = [...allProductsInCart];
       newProducts[index].count = productsQuantity[productId];
@@ -216,8 +240,6 @@ export function useUpdateQuantity() {
       updateCart(newProducts, totalPrice);
 
       // queryClient.invalidateQueries(queryKeys.cart);
-
-      console.error(error.message);
     },
   });
 
@@ -270,8 +292,7 @@ export function useCardPayment() {
     },
     onError: (error) => {
       toast.dismiss(tLoading);
-      notify("error", `Opps ${error.message}`);
-      console.error(error.message);
+      notify("error", `Opps ${error.response?.data?.message || error.message}`);
     },
   });
 
@@ -316,8 +337,7 @@ export function useCashPayment() {
     },
     onError: (error) => {
       toast.dismiss(tLoading);
-      notify("error", `Opps ${error.message}`);
-      console.error(error.message);
+      notify("error", `Opps ${error.response?.data?.message || error.message}`);
     },
   });
 
@@ -352,8 +372,7 @@ export function useClearAllProductsCart() {
     },
     onError: (error) => {
       toast.dismiss(tLoading);
-      notify("error", `Opps ${error.message}`);
-      console.error(error.message);
+      notify("error", `Opps ${error.response?.data?.message || error.message}`);
     },
   });
 
@@ -392,7 +411,7 @@ export function useDeleteFromCart() {
     },
     onError: (error, variables) => {
       toast.dismiss(tLoading);
-      notify("error", `Opps ${error.message}`);
+      notify("error", `Opps ${error.response?.data?.message || error.message}`);
 
       if (variables.oldQuantity) {
         const nProducts = [...variables.allProductsInCart];
@@ -450,8 +469,7 @@ export function useAddToCardHook() {
     },
     onError: (error) => {
       toast.dismiss(tLoading);
-      notify("error", `Opps ${error.message}`);
-      console.error(error.message);
+      notify("error", `Opps ${error.response?.data?.message || error.message}`);
     },
   });
 
@@ -493,8 +511,7 @@ export function useDeleteFromWishList() {
     },
     onError: (error) => {
       toast.dismiss(tLoading);
-      notify("error", `Opps ${error.message}`);
-      console.error(error.message);
+      notify("error", `Opps ${error.response?.data?.message || error.message}`);
     },
   });
 
@@ -546,9 +563,8 @@ export function useHandelLoveHook() {
       setWishList(data?.data);
     },
     onError: (error) => {
-      console.error("error", error.message);
       toast.dismiss(tLoading);
-      notify("error", `Opps something went wrong ${error.message}`);
+      notify("error", `Opps ${error.response?.data?.message || error.message}`);
     },
   });
 

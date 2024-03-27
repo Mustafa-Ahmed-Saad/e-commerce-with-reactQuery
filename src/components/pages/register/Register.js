@@ -3,12 +3,14 @@ import React, { useEffect } from "react";
 import { registerValidationSchema } from "../../../validation/validation";
 
 import { useNavigate } from "react-router-dom";
-import { postData } from "./../../../helper/api";
 import { useContextMain } from "../../../contexts/MainContext";
+import { useRegisterHook } from "../../../helper/hooks/asyncFunction";
 
 export default function Register() {
   const { token } = useContextMain();
   const navigate = useNavigate();
+
+  const { registerHook } = useRegisterHook();
 
   useEffect(() => {
     if (token) {
@@ -16,15 +18,9 @@ export default function Register() {
     }
   }, []);
 
-  async function submit(values) {
-    const [data, errorMessage] = await postData("/api/v1/auth/signup", values);
-
-    if (data?.token) {
-      // we can go directly to home if we want but uou should handle and save token in cookies
-      navigate("/login");
-    } else {
-      console.error(errorMessage);
-    }
+  function submit(values) {
+    // edit values if needed
+    registerHook(values);
   }
 
   const formik = useFormik({
