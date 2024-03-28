@@ -33,6 +33,34 @@ export function useLogOutHook() {
 // .......................... mutations ..............................
 // ....................................................................
 
+export function useResetPasswordHook() {
+  const navigate = useNavigate();
+
+  const resetPassword = async (values) => {
+    const data = await axiosInstance.put("/api/v1/auth/resetPassword", values);
+
+    return data?.data;
+  };
+
+  const { mutate } = useMutation({
+    mutationFn: resetPassword,
+    mutationKey: [mutationKeys.resetPassword],
+    onSuccess: (data) => {
+      if (data?.token) {
+        navigate("/login");
+      }
+    },
+    onError: (error) => {
+      console.log(error);
+      notify("error", `Opps ${error.response?.data?.message || error.message}`);
+    },
+  });
+
+  return {
+    resetPasswordHook: mutate,
+  };
+}
+
 export function useRegisterHook() {
   const navigate = useNavigate();
 

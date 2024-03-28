@@ -3,12 +3,13 @@ import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { useContextMain } from "../../../contexts/MainContext";
-import { putData } from "../../../helper/api";
 import { resetPasswordSchema } from "../../../validation/validation";
+import { useResetPasswordHook } from "../../../helper/hooks/asyncFunction";
 
 export default function ResetPassword() {
   const navigate = useNavigate();
   const { token } = useContextMain();
+  const { resetPasswordHook } = useResetPasswordHook();
 
   useEffect(() => {
     if (token) {
@@ -17,16 +18,8 @@ export default function ResetPassword() {
   }, []);
 
   async function submit(values) {
-    const [data, errorMessage] = await putData(
-      "/api/v1/auth/resetPassword",
-      values
-    );
-
-    if (data?.token) {
-      navigate("/login");
-    } else {
-      console.error(errorMessage);
-    }
+    // edit values here if you want
+    resetPasswordHook(values);
   }
 
   const formik = useFormik({

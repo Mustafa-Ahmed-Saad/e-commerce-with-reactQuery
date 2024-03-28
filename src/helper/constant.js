@@ -25,4 +25,5 @@ export const mutationKeys = {
   forgetPassword: "forgetPassword",
   verifyCodeHook: "verifyCodeHook",
   register: "register",
+  resetPassword: "resetPassword",
 };
