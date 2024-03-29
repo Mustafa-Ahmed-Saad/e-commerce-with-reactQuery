@@ -1,4 +1,4 @@
-import { createHashRouter, Navigate } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 import Layout from "../Layout/Layout";
 import ForgetPassword from "../pages/forgetPassword/ForgetPassword";
 import Home from "../pages/home/Home";
@@ -19,7 +19,7 @@ import CheckOut from "../pages/checkOut/CheckOut";
 import AllOrders from "../pages/allOrders/AllOrders";
 import SubCategoryProducts from "./../pages/subCategoryProducts/SubCategoryProducts";
 
-export const routers = createHashRouter([
+export const routers = createBrowserRouter([
   {
     path: "",
     element: <Layout />,
