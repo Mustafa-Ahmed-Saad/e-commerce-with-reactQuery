@@ -47,7 +47,6 @@ export default function Cart() {
   }
 
   async function updateProductQuantity(productId, count, index, totalPrice) {
-    // TODO: TOST MESSAGE IF ERROR
     if (count < 0) {
       count = 0;
     }

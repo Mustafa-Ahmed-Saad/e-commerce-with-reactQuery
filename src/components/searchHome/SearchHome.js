@@ -10,6 +10,8 @@ export default function SearchHome({
 
   // write code that sum two function
 
+  console.log("products", products);
+
   function handelSearch(e) {
     toggleSearchLoading(true);
 

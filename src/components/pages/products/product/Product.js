@@ -63,7 +63,6 @@ export default function Product() {
                 </button>
 
                 <div>
-                  {/* TODO:handel whenclick Love icon and handel when show all product to make the product in wish list is hart is red */}
                   <FontAwesomeIcon
                     className={`d-inline-block ms-auto fa-xl cursor-pointer ${
                       wishList?.includes(product?.id) ? "text-danger" : null

@@ -10,10 +10,6 @@ import { mutationKeys, queryKeys } from "../constant";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useUpdateCart } from "./updateCart";
 
-// TODO: out all async function in fun hook
-
-// TODO: create Register Hook
-
 export function useLogOutHook() {
   const { setToken } = useContextMain();
   const queryClient = useQueryClient();
@@ -548,7 +544,7 @@ export function useHandelLoveHook() {
   const ExistInWishlist = "exist in wishlist";
 
   async function handelLoveHook(id) {
-    // TODO: check here on this ((wishListProductIds.includes(id) || isIdExistInContextWishList(id)) )
+    //  check here on this ((wishListProductIds.includes(id) || isIdExistInContextWishList(id)) )
     if (wishList?.includes(id)) {
       notify("success", "product already exist in wish list");
       return ExistInWishlist;
@@ -676,7 +672,7 @@ export function useGetProducts() {
   const { data = fallback } = useQuery([queryKeys.products], getProducts);
 
   return {
-    data,
+    products: data,
     productsToShow,
     setProductsToShow,
   };
