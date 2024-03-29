@@ -1,0 +1,30 @@
+{
+  "files": {
+    "main.css": "/e-commerce-with-reactQuery/static/css/main.9feeea6e.css",
+    "main.js": "/e-commerce-with-reactQuery/static/js/main.48807a33.js",
+    "static/js/787.ca3ba573.chunk.js": "/e-commerce-with-reactQuery/static/js/787.ca3ba573.chunk.js",
+    "static/media/slider-image-1.webp": "/e-commerce-with-reactQuery/static/media/slider-image-1.8e7c8fb6784218e42352.webp",
+    "static/media/masterCard.webp": "/e-commerce-with-reactQuery/static/media/masterCard.560c258e385ddadb4450.webp",
+    "static/media/404.webp": "/e-commerce-with-reactQuery/static/media/404.21e22162eb63f57fdfc1.webp",
+    "static/media/amazonPay.webp": "/e-commerce-with-reactQuery/static/media/amazonPay.5ada5ed0dbc688cd42dc.webp",
+    "static/media/appleAppStore.webp": "/e-commerce-with-reactQuery/static/media/appleAppStore.6edb559ad1b68d183531.webp",
+    "static/media/googlePlay.webp": "/e-commerce-with-reactQuery/static/media/googlePlay.0063e8d0a64fb966da8c.webp",
+    "static/media/slider-image-2.webp": "/e-commerce-with-reactQuery/static/media/slider-image-2.d150daaf312449df0fbf.webp",
+    "static/media/22.webp": "/e-commerce-with-reactQuery/static/media/22.94d74080711e2141ea09.webp",
+    "static/media/slider-image-3.webp": "/e-commerce-with-reactQuery/static/media/slider-image-3.b977acf7f9bbea9bf681.webp",
+    "static/media/11.webp": "/e-commerce-with-reactQuery/static/media/11.d798a229eaddf24afd35.webp",
+    "static/media/PayPal.webp": "/e-commerce-with-reactQuery/static/media/PayPal.dafbea70b9fa5caa9448.webp",
+    "static/media/slick.svg": "/e-commerce-with-reactQuery/static/media/slick.2630a3e3eab21c607e21.svg",
+    "static/media/slick.eot": "/e-commerce-with-reactQuery/static/media/slick.a4e97f5a2a64f0ab1323.eot",
+    "static/media/slick.ttf": "/e-commerce-with-reactQuery/static/media/slick.c94f7671dcc99dce43e2.ttf",
+    "static/media/slick.woff": "/e-commerce-with-reactQuery/static/media/slick.295183786cd8a1389865.woff",
+    "index.html": "/e-commerce-with-reactQuery/index.html",
+    "main.9feeea6e.css.map": "/e-commerce-with-reactQuery/static/css/main.9feeea6e.css.map",
+    "main.48807a33.js.map": "/e-commerce-with-reactQuery/static/js/main.48807a33.js.map",
+    "787.ca3ba573.chunk.js.map": "/e-commerce-with-reactQuery/static/js/787.ca3ba573.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.9feeea6e.css",
+    "static/js/main.48807a33.js"
+  ]
+}
