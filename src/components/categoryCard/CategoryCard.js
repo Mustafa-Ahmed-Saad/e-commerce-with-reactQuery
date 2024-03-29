@@ -1,4 +1,3 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
 import Card from "react-bootstrap/Card";
 import { LazyLoadImage } from "react-lazy-load-image-component";
@@ -7,13 +6,13 @@ import { LazyLoadImage } from "react-lazy-load-image-component";
 export default function CategoryCard({ category }) {
   const navigate = useNavigate();
 
-  function goToCategory(id) {
-    // TODO: can't pass state to subCategory to change header (h2) title
+  const goToCategory = (id) => {
+    // pass state to subCategory to change header (h2) title
     navigate(`/categories/${id}`, {
       // replace: true,
       state: { subCategoryName: category.name },
     });
-  }
+  };
 
   return (
     <div onClick={() => goToCategory(category._id)}>
@@ -26,13 +25,6 @@ export default function CategoryCard({ category }) {
           alt="brand-img"
           height="300px"
         />
-
-        {/* <Card.Img
-          className="object-fit-cover object-position-center"
-          style={{ height: "300px" }}
-          variant="top"
-          src={category.image}
-        /> */}
 
         <Card.Body>
           <Card.Title className="text-center text-main fw-bold">

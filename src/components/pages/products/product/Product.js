@@ -8,8 +8,8 @@ import {
   useHandelLoveHook,
 } from "../../../../helper/hooks/asyncFunction";
 import SEO from "../../../../helper/SEO";
-import Loading from "../../../locading/Loading";
 import ProductSlider from "../../../productSlider/ProductSlider";
+import NewLoading from "../../../NewLoading/NewLoading";
 
 export default function Product() {
   const { id } = useParams();
@@ -19,7 +19,7 @@ export default function Product() {
   const { addToCardHook } = useAddToCardHook();
   const { product } = useGetProduct(id);
 
-  let ui = <Loading />;
+  let ui = <NewLoading />;
 
   if (!loading) {
     ui = product ? (

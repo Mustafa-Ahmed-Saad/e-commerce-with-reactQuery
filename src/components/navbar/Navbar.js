@@ -1,6 +1,6 @@
 import "./Navbar.css";
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { faCartShopping, faBars, faX } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Container from "react-bootstrap/Container";
@@ -8,7 +8,6 @@ import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import { NavLink } from "react-router-dom";
 import Badge from "react-bootstrap/Badge";
-import Cookies from "js-cookie";
 import { useContextMain } from "../../contexts/MainContext";
 import ToggleModeCheck from "../toggleModeCheck/ToggleModeCheck";
 import { useRef } from "react";
@@ -21,14 +20,15 @@ export default function MainNavbar() {
   const [isScrollDown, setIsScrollDown] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const inputRef = useRef(); // Step 1: Create a ref
+  const inputRef = useRef();
+  let scrollOffset = 0;
 
   const { logOut } = useLogOutHook();
 
-  function toggleMode(isChicked) {
+  const toggleMode = (isChecked) => {
     const htmlTag = document.documentElement;
 
-    if (isChicked) {
+    if (isChecked) {
       // isChecked = true = dark
       htmlTag.setAttribute("data-bs-theme", "dark");
       setMode("dark");
@@ -37,24 +37,17 @@ export default function MainNavbar() {
       htmlTag.setAttribute("data-bs-theme", "light");
       setMode("light");
     }
-  }
+  };
 
-  let scrollOffset = 0;
-  const handleScroll = (e) => {
-    if (scrollOffset > window.pageYOffset) {
-      // remove class scroll up
-      setIsScrollDown(false);
-    } else {
-      // add class scroll down
-      setIsScrollDown(true);
-    }
+  const handleScroll = () => {
+    // true: remove class scroll up  |  false: add class scroll down
+    scrollOffset > window.pageYOffset
+      ? setIsScrollDown(false)
+      : setIsScrollDown(true);
+
     scrollOffset = window.pageYOffset;
 
-    if (window.scrollY > 0) {
-      setIsScrolled(true);
-    } else {
-      setIsScrolled(false);
-    }
+    window.scrollY > 0 ? setIsScrolled(true) : setIsScrolled(false);
   };
 
   useEffect(() => {
@@ -84,12 +77,12 @@ export default function MainNavbar() {
       }
     }
 
-    if (mainColor) {
-      // change value of mainColor variable in html tag
+    // change value of mainColor variable in html tag
+    mainColor &&
       document.documentElement.style.setProperty("--main-color", mainColor);
-    }
 
     window.addEventListener("scroll", handleScroll);
+
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
@@ -226,37 +219,29 @@ export default function MainNavbar() {
               </Nav>
             </>
           ) : (
-            <>
-              <Nav className="align-items-center ms-auto">
-                {/* //  register */}
-                <NavLink
-                  className="nav-link fw-bold me-2"
-                  aria-current="page"
-                  to="/register"
-                >
-                  register
-                </NavLink>
-                {/* // login */}
-                <NavLink
-                  className="nav-link fw-bold"
-                  aria-current="page"
-                  to="/login"
-                >
-                  log in
-                </NavLink>
-              </Nav>
-            </>
+            <Nav className="align-items-center ms-auto">
+              {/* //  register */}
+              <NavLink
+                className="nav-link fw-bold me-2"
+                aria-current="page"
+                to="/register"
+              >
+                register
+              </NavLink>
+              {/* // login */}
+              <NavLink
+                className="nav-link fw-bold"
+                aria-current="page"
+                to="/login"
+              >
+                log in
+              </NavLink>
+            </Nav>
           )}
         </Navbar.Collapse>
 
         <div className="mode-check-container ms-auto me-2 ms-xl-3 d-none d-xl-block">
           <ToggleModeCheck toggleMode={toggleMode} inputRef={inputRef} />
-          {/* <Toggle
-                  checked={isDark}
-                  onChange={({ target }) => toggleMode(target.checked)}
-                  icons={{ checked: "🌙", unchecked: "🔆" }}
-                  aria-label="Dark mode toggle"
-                /> */}
         </div>
       </Container>
     </Navbar>

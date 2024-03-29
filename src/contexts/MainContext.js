@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import useLocalStorage from "use-local-storage";
 import { useGetWishListProducts } from "../helper/hooks/asyncFunction";
@@ -38,6 +38,7 @@ export default function MainContextProvider({ children }) {
 
   useEffect(() => {
     if (token) {
+      // !(wishList?.length > 0) && refetch(token);
       if (!(wishList?.length > 0)) {
         refetch(token);
       }

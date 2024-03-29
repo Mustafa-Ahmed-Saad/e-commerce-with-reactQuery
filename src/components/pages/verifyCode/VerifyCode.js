@@ -1,5 +1,5 @@
 import { useFormik } from "formik";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { useContextMain } from "../../../contexts/MainContext";
@@ -15,9 +15,7 @@ export default function VerifyCode() {
   const { verifyCodeHook } = useVerifyCodeHook();
 
   useEffect(() => {
-    if (token) {
-      navigate("/home");
-    }
+    token && navigate("/home");
   }, []);
 
   useEffect(() => {
@@ -26,10 +24,10 @@ export default function VerifyCode() {
     }, 7000);
   }, [showAlert]);
 
-  function submit(value) {
+  const submit = (value) => {
     const obj = { value, setShowAlert };
     verifyCodeHook(obj);
-  }
+  };
 
   const formik = useFormik({
     initialValues: {

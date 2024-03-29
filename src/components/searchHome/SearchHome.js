@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import Form from "react-bootstrap/Form";
 
 export default function SearchHome({
@@ -12,9 +12,8 @@ export default function SearchHome({
 
   function handelSearch(e) {
     toggleSearchLoading(true);
-    if (searchInterval) {
-      clearTimeout(searchInterval);
-    }
+
+    searchInterval && clearTimeout(searchInterval);
 
     setSearchInterval(
       setTimeout(() => {

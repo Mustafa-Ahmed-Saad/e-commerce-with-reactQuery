@@ -2,9 +2,7 @@ import { useEffect } from "react";
 import { useContextMain } from "../../contexts/MainContext";
 import ColorsPalette from "../colorsPalette/ColorsPalette";
 import Login from "../pages/login/Login";
-import MyToster from "../toster/MyToster";
 import WOW from "wow.js";
-import NewLoading from "../NewLoading/NewLoading";
 
 export default function ProtectedRoute({ children }) {
   const { token } = useContextMain();
@@ -24,5 +22,5 @@ export default function ProtectedRoute({ children }) {
     );
   }
 
-  return <>{ui}</>;
+  return ui;
 }

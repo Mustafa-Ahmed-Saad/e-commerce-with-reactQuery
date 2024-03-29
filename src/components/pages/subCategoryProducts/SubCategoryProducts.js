@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useContextMain } from "../../../contexts/MainContext";
@@ -12,16 +12,16 @@ export default function SubCategoryProducts() {
 
   function getProducts() {
     let selectedProducts = [];
-    // i want to create new array from ids of subCategories that in products.subCategory
+    // create new array from ids of subCategories that in products.subCategory
     let productSubCategoriesIds = [];
     allAppProducts?.forEach((product) => {
       product.subcategory?.forEach((subCategory) => {
         productSubCategoriesIds.push(subCategory._id);
       });
 
-      if (productSubCategoriesIds.includes(subCategoryId)) {
+      productSubCategoriesIds.includes(subCategoryId) &&
         selectedProducts.push(product);
-      }
+
       productSubCategoriesIds = [];
     });
 

@@ -1,6 +1,6 @@
 import { faGear } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useState } from "react";
+import { useState } from "react";
 import { useContextMain } from "./../../contexts/MainContext";
 
 export default function ColorsPalette() {
@@ -8,10 +8,10 @@ export default function ColorsPalette() {
   const [color, setColor] = useState("#000" && mainColor);
   const [isColorsPaletteOpen, setIsColorsPaletteOpen] = useState(false);
 
-  function changeMainColorOfContext(value) {
+  const changeMainColorOfContext = (value) => {
     setMainColor(value);
     document.documentElement.style.setProperty("--main-color", value);
-  }
+  };
 
   function handelSubmit(e) {
     e.preventDefault();

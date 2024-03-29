@@ -31,16 +31,7 @@ export default function WishList() {
   }, [wishListProducts]);
 
   useEffect(() => {
-    if (wishList?.length === 0) {
-      // const newProducts = wishListProducts.filter((product) => {
-      //   if (data.includes(product.id)) {
-      //     return product;
-      //   }
-      // });
-
-      // TODO: delete setWishListProducts and after this mutaion is success change and setQuery [wishlist] with newProducts
-      setLastWishlist([]);
-    }
+    wishList?.length === 0 && setLastWishlist([]);
   }, [wishList]);
 
   useEffect(() => {

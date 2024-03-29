@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import ShowProducts from "../../showProducts/ShowProducts";
 import HomeResponsiveSlider from "../../homeResponsiveSlider/HomeResponsiveSlider";
 import MainSlider from "../../mainSlider/MainSlider";
 import SearchHome from "../../searchHome/SearchHome";
 import { useContextMain } from "../../../contexts/MainContext";
-import Loading from "../../locading/Loading";
 import SearchLoading from "../../searchLoading/SearchLoading";
 import SEO from "../../../helper/SEO";
 import {
@@ -12,10 +11,9 @@ import {
   useGetProducts,
   useGetWishListProducts,
 } from "../../../helper/hooks/asyncFunction";
+import NewLoading from "../../NewLoading/NewLoading";
 
 export default function Home() {
-  // TODO: dont forget add load in this project
-
   const [searchLoading, setSearchLoading] = useState(false);
   const { loading, token } = useContextMain();
 
@@ -38,7 +36,8 @@ export default function Home() {
   }, [refetch]);
 
   // return
-  let ui = <Loading />;
+  let ui = <NewLoading />;
+
   if (!loading) {
     ui = (
       <>

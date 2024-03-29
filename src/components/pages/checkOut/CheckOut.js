@@ -1,6 +1,5 @@
 import { useFormik } from "formik";
-import React from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import {
   useCardPayment,
   useCashPayment,
@@ -13,16 +12,11 @@ export default function CheckOut() {
   const { cashPayment } = useCashPayment();
   const { cardPayment } = useCardPayment();
 
-  function submit(formData) {
+  const submit = (formData) => {
     const info = { id, formData };
-    if (formData.payment === "cash") {
-      // cash payment
-      cashPayment(info);
-    } else {
-      // card payment
-      cardPayment(info);
-    }
-  }
+    // true:cash payment | false: card payment
+    formData.payment === "cash" ? cashPayment(info) : cardPayment(info);
+  };
 
   const formik = useFormik({
     initialValues: {

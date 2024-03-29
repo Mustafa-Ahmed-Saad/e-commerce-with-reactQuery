@@ -2,7 +2,7 @@ import { Link, useLocation, useParams } from "react-router-dom";
 import { useContextMain } from "../../../../contexts/MainContext";
 import { useGetSubCategories } from "../../../../helper/hooks/asyncFunction";
 import SEO from "../../../../helper/SEO";
-import Loading from "../../../locading/Loading";
+import NewLoading from "../../../NewLoading/NewLoading";
 
 export default function SubCategory() {
   const { id } = useParams();
@@ -10,7 +10,7 @@ export default function SubCategory() {
   const { loading } = useContextMain();
   const { subCategories } = useGetSubCategories(id);
 
-  let ui = <Loading />;
+  let ui = <NewLoading />;
 
   if (!loading) {
     ui = (

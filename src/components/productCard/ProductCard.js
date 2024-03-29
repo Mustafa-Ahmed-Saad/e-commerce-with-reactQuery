@@ -1,4 +1,3 @@
-import React from "react";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -42,85 +41,75 @@ export default function ProductCard({ product, index }) {
   }
 
   return (
-    <>
-      <div
-        onClick={(e) => {
-          goToProduct(e, product.id);
-        }}
+    <div
+      onClick={(e) => {
+        goToProduct(e, product.id);
+      }}
+    >
+      <Card
+        className="p-2 mainShadow wow fadeInUp"
+        data-wow-offset="10"
+        data-wow-delay={wowDelay}
+        data-wow-iteration="1"
       >
-        <Card
-          className="p-2 mainShadow wow fadeInUp"
-          data-wow-offset="10"
-          data-wow-delay={wowDelay}
-          data-wow-iteration="1"
-        >
-          <LazyLoadImage
-            effect="blur"
-            className="w-100 object-fit-cover object-position-center rounded-top-2"
-            variant="top"
-            src={product.imageCover}
-            alt="product-img"
-            height="250px"
-          />
-          {/* <Card.Img
-              className="object-fit-cover object-position-center"
-              style={{ height: "250px" }}
-              variant="top"
-              src={product.imageCover}
-            /> */}
+        <LazyLoadImage
+          effect="blur"
+          className="w-100 object-fit-cover object-position-center rounded-top-2"
+          variant="top"
+          src={product.imageCover}
+          alt="product-img"
+          height="250px"
+        />
 
-          <Card.Body>
-            <Card.Title className="text-main fs-6">
-              <small>{product.category.name}</small>
-            </Card.Title>
-            <Card.Title className="fw-bold fs-5">
-              <OverlayTrigger
-                key="bottom"
-                placement="bottom"
-                overlay={
-                  <Tooltip id={`tooltip-bottom`}>{product.title}</Tooltip>
-                }
-              >
-                <div>
-                  {product.title.length > 15
-                    ? product.title.slice(0, 15)
-                    : product.title}
-                </div>
-              </OverlayTrigger>
-            </Card.Title>
-            <div className="d-flex my-3 justify-content-between">
+        <Card.Body>
+          <Card.Title className="text-main fs-6">
+            <small>{product.category.name}</small>
+          </Card.Title>
+          <Card.Title className="fw-bold fs-5">
+            <OverlayTrigger
+              key="bottom"
+              placement="bottom"
+              overlay={<Tooltip id={`tooltip-bottom`}>{product.title}</Tooltip>}
+            >
               <div>
-                <span>{product.price} EGP</span>
+                {product.title.length > 15
+                  ? product.title.slice(0, 15)
+                  : product.title}
               </div>
-              <div>
-                <FontAwesomeIcon className="text-warning" icon={faStar} />
-                <span>{product.ratingsAverage}</span>
-              </div>
+            </OverlayTrigger>
+          </Card.Title>
+          <div className="d-flex my-3 justify-content-between">
+            <div>
+              <span>{product.price} EGP</span>
             </div>
-            <div className="d-flex justify-content-between align-items-center">
-              <Button
-                variant="btn btn-main me-auto d-inline-block w-75 me-2 addToCart"
-                onClick={() => {
-                  addToCardHook(product.id);
-                }}
-              >
-                + add
-              </Button>
-              <span
-                className="heartIcon"
-                onClick={() => handelLoveHook(product.id)}
-              >
-                <FontAwesomeIcon
-                  className={`d-inline-block ms-auto fa-xl heartIcon ${
-                    wishList?.includes(product.id) ? "text-danger" : null
-                  }`}
-                  icon={faHeart}
-                />
-              </span>
+            <div>
+              <FontAwesomeIcon className="text-warning" icon={faStar} />
+              <span>{product.ratingsAverage}</span>
             </div>
-          </Card.Body>
-        </Card>
-      </div>
-    </>
+          </div>
+          <div className="d-flex justify-content-between align-items-center">
+            <Button
+              variant="btn btn-main me-auto d-inline-block w-75 me-2 addToCart"
+              onClick={() => {
+                addToCardHook(product.id);
+              }}
+            >
+              + add
+            </Button>
+            <span
+              className="heartIcon"
+              onClick={() => handelLoveHook(product.id)}
+            >
+              <FontAwesomeIcon
+                className={`d-inline-block ms-auto fa-xl heartIcon ${
+                  wishList?.includes(product.id) ? "text-danger" : null
+                }`}
+                icon={faHeart}
+              />
+            </span>
+          </div>
+        </Card.Body>
+      </Card>
+    </div>
   );
 }

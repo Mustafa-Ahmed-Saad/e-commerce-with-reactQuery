@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useGetBrands } from "../../../helper/hooks/asyncFunction";
 import SEO from "../../../helper/SEO";
 import BrandCard from "../../brandCard/BrandCard";

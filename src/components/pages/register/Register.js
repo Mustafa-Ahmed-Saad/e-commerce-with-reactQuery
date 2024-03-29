@@ -1,5 +1,5 @@
 import { useFormik } from "formik";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { registerValidationSchema } from "../../../validation/validation";
 
 import { useNavigate } from "react-router-dom";
@@ -13,9 +13,7 @@ export default function Register() {
   const { registerHook } = useRegisterHook();
 
   useEffect(() => {
-    if (token) {
-      navigate("/home");
-    }
+    token && navigate("/home");
   }, []);
 
   function submit(values) {

@@ -46,12 +46,9 @@ export function useResetPasswordHook() {
     mutationFn: resetPassword,
     mutationKey: [mutationKeys.resetPassword],
     onSuccess: (data) => {
-      if (data?.token) {
-        navigate("/login");
-      }
+      data?.token && navigate("/login");
     },
     onError: (error) => {
-      console.log(error);
       notify("error", `Opps ${error.response?.data?.message || error.message}`);
     },
   });
@@ -73,12 +70,9 @@ export function useRegisterHook() {
     mutationFn: registerHook,
     mutationKey: [mutationKeys.register],
     onSuccess: (data) => {
-      console.log("ggggggggggggggggggggoooooooooooddddddd", data);
-      if (data?.token) {
-        navigate("/login");
-      }
+      data?.token && navigate("/login");
     },
-    onError: (error, x, y, z) => {
+    onError: (error) => {
       notify("error", `Opps ${error.response?.data?.message || error.message}`);
     },
   });

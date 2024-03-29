@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import appStore from "../../Assets/Images/appleAppStore.webp";
 import googlePlay from "../../Assets/Images/googlePlay.webp";
 import amazonPay from "../../Assets/Images/amazonPay.webp";
@@ -9,12 +9,12 @@ import { LazyLoadImage } from "react-lazy-load-image-component";
 export default function Footer() {
   const [inputValue, setInputValue] = useState("");
 
-  // handel submit function
+  // handel submit
   function handelSubmit() {
     console.log(inputValue);
   }
 
-  // write handelChange function to handle input change
+  // handle input change
   function handelChange(e) {
     setInputValue(e.target.value);
   }

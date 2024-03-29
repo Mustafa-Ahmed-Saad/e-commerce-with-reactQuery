@@ -1,6 +1,6 @@
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useState } from "react";
+import { useState } from "react";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import { Link, useNavigate } from "react-router-dom";
 import { useContextMain } from "../../../contexts/MainContext";
@@ -11,8 +11,8 @@ import {
   useUpdateQuantity,
 } from "../../../helper/hooks/asyncFunction";
 import SEO from "../../../helper/SEO";
-import Loading from "../../locading/Loading";
 import { useUpdateCart } from "../../../helper/hooks/updateCart";
+import NewLoading from "../../NewLoading/NewLoading";
 
 export default function Cart() {
   const { productsCounter, productsQuantity } = useContextMain();
@@ -57,9 +57,7 @@ export default function Cart() {
 
     updateCart(newProducts, totalCartPrice + totalPrice);
 
-    if (reqInterval) {
-      clearTimeout(reqInterval);
-    }
+    reqInterval && clearTimeout(reqInterval);
 
     setReqInterval(
       setTimeout(async () => {
@@ -80,7 +78,7 @@ export default function Cart() {
 
   //   -----------------------------------------------------------------------------------
 
-  let ui = <Loading />;
+  let ui = <NewLoading />;
 
   if (!loading) {
     ui =

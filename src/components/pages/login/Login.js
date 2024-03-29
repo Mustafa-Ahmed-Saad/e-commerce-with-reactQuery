@@ -1,5 +1,5 @@
 import { useFormik } from "formik";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { loginValidationSchema } from "../../../validation/validation";
 import { useContextMain } from "../../../contexts/MainContext";
@@ -11,18 +11,17 @@ export default function Login() {
   const { loginHook } = useLoginHook();
 
   useEffect(() => {
-    if (token) {
-      navigate("/home");
-    }
+    token && navigate("/home");
   }, []);
 
-  function submit(values) {
+  const submit = (values) => {
+    // edit values if needed
     loginHook(values);
-  }
+  };
 
-  function handelForgetPassword(e) {
+  const handelForgetPassword = () => {
     navigate("/forget-password");
-  }
+  };
 
   const formik = useFormik({
     initialValues: {
