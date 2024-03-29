@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import ShowProducts from "../../showProducts/ShowProducts";
 import HomeResponsiveSlider from "../../homeResponsiveSlider/HomeResponsiveSlider";
 import MainSlider from "../../mainSlider/MainSlider";
@@ -21,7 +21,7 @@ export default function Home() {
   const { products, productsToShow, setProductsToShow } = useGetProducts();
 
   // we don't need wishListProducts or setWishListProducts we need to get wishlistProduct and setWishlist by wishlistProduct id
-  const { refetch } = useGetWishListProducts(token);
+  useGetWishListProducts(token, true);
 
   const toggleSearchLoading = (value) => {
     setSearchLoading(value);
@@ -30,10 +30,6 @@ export default function Home() {
   function changeProduct(newProduct) {
     setProductsToShow(newProduct);
   }
-
-  useEffect(() => {
-    refetch(token);
-  }, [refetch]);
 
   // return
   let ui = <NewLoading />;
@@ -57,8 +53,10 @@ export default function Home() {
         />
         {searchLoading ? (
           <SearchLoading />
-        ) : (
+        ) : productsToShow ? (
           <ShowProducts products={productsToShow} />
+        ) : (
+          <ShowProducts products={products} />
         )}
       </>
     );

@@ -1,7 +1,6 @@
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
-import { LazyLoadImage } from "react-lazy-load-image-component";
 import { Link, useNavigate } from "react-router-dom";
 import { useContextMain } from "../../../contexts/MainContext";
 import {
@@ -13,6 +12,7 @@ import {
 import SEO from "../../../helper/SEO";
 import { useUpdateCart } from "../../../helper/hooks/updateCart";
 import NewLoading from "../../NewLoading/NewLoading";
+import ProductCartItem from "./productCartItem/ProductCartItem";
 
 export default function Cart() {
   const { productsCounter, productsQuantity } = useContextMain();
@@ -109,61 +109,15 @@ export default function Cart() {
             </div>
           </div>
 
-          {allProductsInCart?.map(
-            ({ product: { title, imageCover, id }, price, count }, index) => (
-              <div
-                key={id}
-                className="row bg-body-tertiary my-4 mainShadow rounded-3 transtion-5 flex-column flex-md-row wow fadeInLeft"
-                data-wow-offset="200"
-                data-wow-delay="0.2s"
-                data-wow-iteration="1"
-              >
-                <div className="col-12 col-md-2">
-                  <LazyLoadImage
-                    effect="blur"
-                    className="w-100"
-                    src={imageCover}
-                    alt="product-img"
-                  />
-                </div>
-                <div className="col-12 col-md-10">
-                  <div className="row h-100 align-items-center justify-content-between flex-column flex-sm-row">
-                    <div className="col-12 col-sm-11  col-md-10">
-                      <h3 className="fs-5 fw-bold mb-2">{title}</h3>
-                      <div className="text-main fw-bold mb-1">{price} EGP</div>
-                      <button
-                        className="btn border-0 ps-0 text-danger"
-                        onClick={() => {
-                          deleteProductFromCart(id, index);
-                        }}
-                      >
-                        <FontAwesomeIcon icon={faTrash} /> remove
-                      </button>
-                    </div>
-                    <div className="col-12 col-sm-1 col-md-2 d-flex align-items-center justify-content-center flex-row flex-sm-column-reverse flex-lg-row">
-                      <button
-                        className="btn btn-outline-main"
-                        onClick={() => {
-                          updateProductQuantity(id, count - 1, index, -price);
-                        }}
-                      >
-                        -
-                      </button>
-                      <span className="mx-3">{count}</span>
-                      <button
-                        className="btn btn-outline-main"
-                        onClick={() => {
-                          updateProductQuantity(id, count + 1, index, price);
-                        }}
-                      >
-                        +
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )
-          )}
+          {allProductsInCart?.map((product, index) => (
+            <ProductCartItem
+              key={product._id}
+              deleteProductFromCart={deleteProductFromCart}
+              updateProductQuantity={updateProductQuantity}
+              product={product}
+              index={index}
+            />
+          ))}
 
           <div className="text-center mt-5">
             <button

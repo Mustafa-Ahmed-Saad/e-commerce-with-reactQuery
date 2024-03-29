@@ -1,13 +1,22 @@
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useContextMain } from "../../contexts/MainContext";
 
-const SampleNextArrow = ({ className, style, onClick }) => (
-  <FontAwesomeIcon
-    className={className + "slick-arrow slick-next text-dark fa-5x me-2"}
-    style={{ ...style, display: "block" }}
-    onClick={onClick}
-    icon={faArrowRight}
-  />
-);
+const SampleNextArrow = ({ className, style, onClick }) => {
+  const { mode } = useContextMain();
+
+  const classes = `${className}  text-${
+    mode === "dark" ? "light" : "dark"
+  } "slick-arrow slick-next fa-5x me-2"`;
+
+  return (
+    <FontAwesomeIcon
+      className={classes}
+      style={{ ...style, display: "block" }}
+      onClick={onClick}
+      icon={faArrowRight}
+    />
+  );
+};
 
 export default SampleNextArrow;

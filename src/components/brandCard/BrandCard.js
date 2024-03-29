@@ -1,14 +1,18 @@
 import Card from "react-bootstrap/Card";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import { useGetBrand } from "../../helper/hooks/asyncFunction";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function BrandCard({ brandDetails, handleBrand, handleOpen }) {
-  const { brand, isLoading, error, refetch } = useGetBrand(brandDetails._id);
+  const [enableGetBrand, setEnableGetBrand] = useState(false);
+  const { brand, isLoading, error } = useGetBrand(
+    brandDetails._id,
+    enableGetBrand
+  );
 
-  const getBrandHandle = async () => {
-    // refetch and make enabled true when click on brand
-    await refetch();
+  const getBrandHandle = () => {
+    // make enabled true when click on brand
+    setEnableGetBrand(true);
     handleOpen(true);
   };
 

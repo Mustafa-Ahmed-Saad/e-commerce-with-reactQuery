@@ -3,7 +3,9 @@ import CategoryCard from "../../categoryCard/CategoryCard";
 import { useGetCategories } from "../../../helper/hooks/asyncFunction";
 
 export default function Categories() {
-  const categories = useGetCategories();
+  const { categories } = useGetCategories();
+
+  console.log("categories", categories);
 
   return (
     <>

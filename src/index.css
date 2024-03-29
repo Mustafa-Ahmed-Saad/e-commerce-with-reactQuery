@@ -154,7 +154,8 @@ input#forgetPassword-email:focus + label.forgetPasswordEmail {
   outline: none;
 }
 
-.HomeResponsiveSlider .slick-arrow.slick-disabledslick-arrow {
+.HomeResponsiveSlider .slick-arrow.slick-disabledslick-arrow,
+.HomeResponsiveSlider .slick-arrow.slick-disabled {
   opacity: 0.5 !important;
 }
 

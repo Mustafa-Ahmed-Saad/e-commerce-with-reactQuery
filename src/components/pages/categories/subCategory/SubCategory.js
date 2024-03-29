@@ -27,8 +27,8 @@ export default function SubCategory() {
           {subCategories?.length > 0 ? (
             subCategories?.map((subcategory) => (
               <div
-                className="col-12 col-sm-6 col-md-4 col-xl-3"
                 key={subcategory._id}
+                className="col-12 col-sm-6 col-md-4 col-xl-3"
               >
                 <Link
                   to={`/subcategory/${subcategory._id}`}

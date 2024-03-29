@@ -9,7 +9,7 @@ const ProductSlider = ({ imgUrls }) => {
     <div className="productSluder-un">
       <Slider {...settingProductSlider} className="productSlider">
         {imgUrls?.map((imgUrl, index) => (
-          <div className="overflow-hidden h-300px" key={index}>
+          <div key={index} className="overflow-hidden h-300px">
             <LazyLoadImage
               effect="blur"
               className="w-100 h-100 object-fit-contain object-position-center"

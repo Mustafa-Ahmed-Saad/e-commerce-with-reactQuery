@@ -34,13 +34,14 @@ export default function MainContextProvider({ children }) {
   );
   const [userId, setUserId] = useLocalStorage("userId", false);
 
-  const { wishListProducts, refetch } = useGetWishListProducts(token);
+  const [enableWishlist, setEnableWishlist] = useState(false);
+  const { wishListProducts } = useGetWishListProducts(token, enableWishlist);
 
   useEffect(() => {
     if (token) {
       // !(wishList?.length > 0) && refetch(token);
       if (!(wishList?.length > 0)) {
-        refetch(token);
+        setEnableWishlist(true);
       }
     }
   }, [token]);

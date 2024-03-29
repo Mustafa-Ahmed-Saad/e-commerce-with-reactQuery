@@ -10,8 +10,6 @@ export default function SearchHome({
 
   // write code that sum two function
 
-  console.log("products", products);
-
   function handelSearch(e) {
     toggleSearchLoading(true);
 
@@ -30,7 +28,6 @@ export default function SearchHome({
         });
 
         setProductsToShow(searchProducts);
-        // TODONOW: uncomment toggleSearchLoading(false);
         toggleSearchLoading(false);
         // end loading
         // search inproducts and if founded setProducts state with this product that match

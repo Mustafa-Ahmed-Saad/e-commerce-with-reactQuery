@@ -39,8 +39,10 @@ export default function Products() {
         />
         {searchLoading ? (
           <SearchLoading />
-        ) : (
+        ) : productsToShow ? (
           <ShowProducts products={productsToShow} />
+        ) : (
+          <ShowProducts products={products} />
         )}
       </>
     );

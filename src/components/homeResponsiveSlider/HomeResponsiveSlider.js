@@ -20,7 +20,7 @@ export default function HomeResponsiveSlider({ categories }) {
           {...settingHomeResponsiveSlider}
           className="HomeResponsiveSlider"
         >
-          {categories.map(({ _id, name, image }) => (
+          {categories?.map(({ _id, name, image }) => (
             <div
               key={_id}
               className="cursor-pointer"

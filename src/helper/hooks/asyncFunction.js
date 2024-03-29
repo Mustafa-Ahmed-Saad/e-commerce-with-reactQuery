@@ -44,9 +44,6 @@ export function useResetPasswordHook() {
     onSuccess: (data) => {
       data?.token && navigate("/login");
     },
-    onError: (error) => {
-      notify("error", `Opps ${error.response?.data?.message || error.message}`);
-    },
   });
 
   return {
@@ -67,9 +64,6 @@ export function useRegisterHook() {
     mutationKey: [mutationKeys.register],
     onSuccess: (data) => {
       data?.token && navigate("/login");
-    },
-    onError: (error) => {
-      notify("error", `Opps ${error.response?.data?.message || error.message}`);
     },
   });
 
@@ -102,9 +96,12 @@ export function useVerifyCodeHook() {
         setShowAlert(data?.message);
       }
     },
-    onError: (error, { setShowAlert }) => {
-      notify("error", `Opps ${error.response?.data?.message || error.message}`);
-      setShowAlert(error.message);
+    onSettled: (data, error, variables, context) => {
+      const { setShowAlert } = variables;
+      if (error) {
+        const message = error.response?.data?.message || error.message;
+        setShowAlert(message);
+      }
     },
   });
 
@@ -143,6 +140,7 @@ export function useForgetPassword() {
       }
     },
     onError: (error, { setShowAlert, setAlertInterval }) => {
+      // onError here override on global onError
       notify("error", `Opps ${error.response?.data?.message || error.message}`);
       setShowAlert(
         `${error.message} or no user registered with this email address`
@@ -194,9 +192,6 @@ export function useLoginHook() {
       // queryClient.invalidateQueries(queryKeys.userId);
 
       navigate("/home");
-    },
-    onError: (error) => {
-      notify("error", `Opps ${error.response?.data?.message || error.message}`);
     },
   });
 
@@ -308,10 +303,6 @@ export function useCardPayment() {
       // window.open(data?.session?.url, '_blank');
       // return "done";
     },
-    onError: (error) => {
-      toast.dismiss(tLoading);
-      notify("error", `Opps ${error.response?.data?.message || error.message}`);
-    },
   });
 
   return {
@@ -353,10 +344,6 @@ export function useCashPayment() {
       notify("success", "order successfully created");
       // return "done";
     },
-    onError: (error) => {
-      toast.dismiss(tLoading);
-      notify("error", `Opps ${error.response?.data?.message || error.message}`);
-    },
   });
 
   return {
@@ -387,10 +374,6 @@ export function useClearAllProductsCart() {
       notify("success", "clear All products successfully");
       setProductsCounter(0);
       updateCart([], 0);
-    },
-    onError: (error) => {
-      toast.dismiss(tLoading);
-      notify("error", `Opps ${error.response?.data?.message || error.message}`);
     },
   });
 
@@ -427,14 +410,19 @@ export function useDeleteFromCart() {
       setProductsQuantity(pq);
       updateCart(data.products, data.totalCartPrice);
     },
-    onError: (error, variables) => {
-      toast.dismiss(tLoading);
-      notify("error", `Opps ${error.response?.data?.message || error.message}`);
-
-      if (variables.oldQuantity) {
-        const nProducts = [...variables.allProductsInCart];
-        nProducts[variables.index].count = variables.oldQuantity;
-        updateCart(nProducts, 0);
+    onSettled: (data, error, variables, context) => {
+      if (error) {
+        // if error
+        // global onError work fist then onSettled
+        if (variables.oldQuantity) {
+          const nProducts = [...variables.allProductsInCart];
+          nProducts[variables.index].count = variables.oldQuantity;
+          updateCart(nProducts, 0);
+        }
+      } else {
+        // if Success
+        // global onSuccess work fist then onSettled
+        // console.log("Mutation was successful");
       }
     },
   });
@@ -483,11 +471,7 @@ export function useAddToCardHook() {
       notify("success", "product successfully added to cart");
       // here also return totalprice in (data?.data?.totalCartPrice)
       setProductsCounter(data.products.length);
-      // return "done";
-    },
-    onError: (error) => {
-      toast.dismiss(tLoading);
-      notify("error", `Opps ${error.response?.data?.message || error.message}`);
+      queryClient.invalidateQueries(queryKeys.cart);
     },
   });
 
@@ -526,10 +510,6 @@ export function useDeleteFromWishList() {
       setWishList(data);
       toast.dismiss(tLoading);
       notify("success", `Deleted successfully`);
-    },
-    onError: (error) => {
-      toast.dismiss(tLoading);
-      notify("error", `Opps ${error.response?.data?.message || error.message}`);
     },
   });
 
@@ -580,10 +560,6 @@ export function useHandelLoveHook() {
       queryClient.setQueryData(queryKeys.wishListProductIds, data?.data);
       setWishList(data?.data);
     },
-    onError: (error) => {
-      toast.dismiss(tLoading);
-      notify("error", `Opps ${error.response?.data?.message || error.message}`);
-    },
   });
 
   return mutate;
@@ -613,7 +589,7 @@ export function useGetAllOrders() {
   return orders;
 }
 
-export function useGetWishListProducts(token) {
+export function useGetWishListProducts(token, enable) {
   let wishListProducts = [];
 
   async function getWishList() {
@@ -625,8 +601,8 @@ export function useGetWishListProducts(token) {
     return data?.data?.data;
   }
 
-  const { data, refetch } = useQuery([queryKeys.wishList], getWishList, {
-    enabled: false,
+  const { data } = useQuery([queryKeys.wishList], getWishList, {
+    enabled: enable,
   });
 
   if (data) {
@@ -635,11 +611,10 @@ export function useGetWishListProducts(token) {
 
   return {
     wishListProducts,
-    refetch,
   };
 }
 
-export function useGetCategories(withLoading) {
+export function useGetCategories() {
   const fallback = [];
 
   async function getCategories() {
@@ -652,12 +627,12 @@ export function useGetCategories(withLoading) {
     getCategories
   );
 
-  return categories;
+  return { categories };
 }
 
 export function useGetProducts() {
   const { setAllAppProducts } = useContextMain();
-  const [productsToShow, setProductsToShow] = useState([]);
+  const [productsToShow, setProductsToShow] = useState(null);
   const fallback = [];
 
   async function getProducts() {
@@ -697,28 +672,29 @@ export function useGetSubCategories(id) {
   };
 }
 
-export function useGetBrand(id) {
+export function useGetBrand(id, enable) {
   const fallback = null;
 
   async function getBrand() {
-    const { data } = await axiosInstance.get("/api/v1/brands/" + id);
-    return data;
+    const { data } = await axiosInstance(`/api/v1/brands/${id}`);
+    console.log("brand", data?.data);
+    return data?.data;
   }
 
   const {
     data: brand = fallback,
     isLoading,
     error,
-    refetch,
-  } = useQuery([queryKeys.brand, id], getBrand, {
-    enabled: false,
+  } = useQuery({
+    queryKey: [queryKeys.brand, id],
+    queryFn: getBrand,
+    enabled: enable,
   });
 
   return {
     brand,
     isLoading,
     error,
-    refetch,
   };
 }
 
