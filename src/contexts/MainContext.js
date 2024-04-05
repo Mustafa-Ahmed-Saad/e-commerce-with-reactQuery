@@ -53,6 +53,8 @@ export default function MainContextProvider({ children }) {
       });
       setWishList(newWishlist);
     }
+    //
+    setEnableWishlist(false);
   }, [wishListProducts]);
 
   // You can include other shared state and functions here
@@ -77,6 +79,7 @@ export default function MainContextProvider({ children }) {
         setMode,
         mainColor,
         setMainColor,
+        setEnableWishlist,
       }}
     >
       {children}

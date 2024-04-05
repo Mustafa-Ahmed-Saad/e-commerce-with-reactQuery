@@ -2,6 +2,7 @@ import { LazyLoadImage } from "react-lazy-load-image-component";
 import SampleNextArrow from "../components/sampleNextArrow/SampleNextArrow";
 import SamplePrevArrow from "../components/samplePrevArrow/SamplePrevArrow";
 
+// settingHomeResponsiveSlider
 export const settingHomeResponsiveSlider = {
   dots: false,
   customPaging: function (i) {
@@ -44,6 +45,7 @@ export const settingHomeResponsiveSlider = {
   ],
 };
 
+// settingMainSlider
 export const settingMainSlider = {
   dots: true,
   customPaging: function (i) {
@@ -56,6 +58,7 @@ export const settingMainSlider = {
   arrows: false,
 };
 
+// settingProductSliderFun
 export const settingProductSliderFun = (imgUrls) => {
   return {
     customPaging: function (i) {

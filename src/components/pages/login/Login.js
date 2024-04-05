@@ -4,10 +4,11 @@ import { useNavigate } from "react-router-dom";
 import { loginValidationSchema } from "../../../validation/validation";
 import { useContextMain } from "../../../contexts/MainContext";
 import { useLoginHook } from "../../../helper/hooks/asyncFunction";
+import CustomInput from "../../customInput/CustomInput";
 
 export default function Login() {
   const navigate = useNavigate();
-  const { token, setToken } = useContextMain();
+  const { token } = useContextMain();
   const { loginHook } = useLoginHook();
 
   useEffect(() => {
@@ -37,48 +38,40 @@ export default function Login() {
       <h2 className="mb-4 fw-bold">login now</h2>
       <form onSubmit={formik.handleSubmit}>
         {/* email */}
-        <div className="mb-3 input-group-lg">
-          <label htmlFor="email" className="form-label fw-bold">
-            Email:
-          </label>
-          <input
-            type="email"
-            autoComplete="email"
-            className="form-control mb-2"
-            id="email"
-            name="email"
-            value={formik.values.email}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            aria-describedby="emailHelp"
-          />
-          {formik.errors.email && formik.touched.email ? (
-            <div className="alert alert-danger">{formik.errors.email}</div>
-          ) : null}
-        </div>
+        <CustomInput
+          label="Email"
+          inputClasses="form-control mb-2"
+          labelClasses="form-label fw-bold"
+          error={formik.errors.email}
+          touched={formik.touched.email}
+          type="email"
+          value={formik.values.email}
+          autoComplete="email"
+          id="email"
+          name="email"
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          aria-describedby="emailHelp"
+        />
+
         {/* password */}
-        <div className="mb-3 input-group-lg">
-          <label htmlFor="password" className="form-label fw-bold">
-            Password:
-          </label>
-          <input
-            type="password"
-            autoComplete="new-password"
-            className="form-control mb-2"
-            id="password"
-            name="password"
-            value={formik.values.password}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            aria-describedby="passwordHelp"
-          />
-          {formik.errors.password && formik.touched.password ? (
-            <div
-              className="alert alert-danger"
-              dangerouslySetInnerHTML={{ __html: formik.errors.password }}
-            />
-          ) : null}
-        </div>
+        <CustomInput
+          label="Password"
+          inputClasses="form-control mb-2"
+          labelClasses="form-label fw-bold"
+          error={formik.errors.password}
+          touched={formik.touched.password}
+          type="password"
+          value={formik.values.password}
+          autoComplete="new-password"
+          id="new-password"
+          name="password"
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+          aria-describedby="passwordHelp"
+          dangerouslySetInnerHTML={true}
+        />
+
         <p
           type="button"
           onClick={handelForgetPassword}

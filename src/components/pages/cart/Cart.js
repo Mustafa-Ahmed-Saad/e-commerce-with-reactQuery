@@ -10,7 +10,7 @@ import {
   useUpdateQuantity,
 } from "../../../helper/hooks/asyncFunction";
 import SEO from "../../../helper/SEO";
-import { useUpdateCart } from "../../../helper/hooks/updateCart";
+import { useUpdateCart } from "../../../helper/hooks/function";
 import NewLoading from "../../NewLoading/NewLoading";
 import ProductCartItem from "./productCartItem/ProductCartItem";
 

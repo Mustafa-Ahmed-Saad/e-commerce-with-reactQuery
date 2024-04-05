@@ -1,6 +1,6 @@
 import "./LoadingStyle.css";
 import { useIsFetching, useIsMutating } from "react-query";
-import { mutationKeys, queryKeys } from "../../helper/constant";
+import { mutationKeys, queryKeys } from "../../helper/constant-api-keys";
 import BrandCardLoading from "../brandCardLoading/BrandCardLoading";
 
 export default function NewLoading() {

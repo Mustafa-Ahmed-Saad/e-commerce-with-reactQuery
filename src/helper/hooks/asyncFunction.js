@@ -6,24 +6,9 @@ import { useNavigate } from "react-router-dom";
 import jwt_decode from "jwt-decode";
 import Cookies from "js-cookie";
 import { useState } from "react";
-import { mutationKeys, queryKeys } from "../constant";
+import { mutationKeys, queryKeys } from "../constant-api-keys";
 import { useMutation, useQuery, useQueryClient } from "react-query";
-import { useUpdateCart } from "./updateCart";
-
-export function useLogOutHook() {
-  const { setToken } = useContextMain();
-  const queryClient = useQueryClient();
-
-  const logOut = () => {
-    Cookies.remove("token");
-    setToken(false);
-    localStorage.clear();
-
-    queryClient.clear();
-  };
-
-  return { logOut };
-}
+import { useUpdateCart } from "./function";
 
 // ....................................................................
 // .......................... mutations ..............................
@@ -679,7 +664,6 @@ export function useGetBrand(id, enable) {
 
   async function getBrand() {
     const { data } = await axiosInstance(`/api/v1/brands/${id}`);
-    console.log("brand", data?.data);
     return data?.data;
   }
 

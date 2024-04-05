@@ -5,6 +5,7 @@ import {
   useCashPayment,
 } from "../../../helper/hooks/asyncFunction";
 import { checkOutValidationSchema } from "../../../validation/validation";
+import CustomInput from "../../customInput/CustomInput";
 
 export default function CheckOut() {
   //   get cart id
@@ -34,59 +35,51 @@ export default function CheckOut() {
       <h2 className="mb-4 fw-bold">Checkout now</h2>
       <form onSubmit={formik.handleSubmit}>
         {/* details */}
-        <div className="mb-3 input-group-lg">
-          <label htmlFor="details" className="form-label fw-bold">
-            details:
-          </label>
-          <input
-            type="text"
-            className="form-control mb-2"
-            id="details"
-            name="details"
-            value={formik.values.details}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-          />
-          {formik.errors.details && formik.touched.details ? (
-            <div className="alert alert-danger">{formik.errors.details}</div>
-          ) : null}
-        </div>
+        <CustomInput
+          label="details"
+          inputClasses="form-control mb-2"
+          labelClasses="form-label fw-bold"
+          error={formik.errors.details}
+          touched={formik.touched.details}
+          type="text"
+          value={formik.values.details}
+          id="details"
+          name="details"
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+        />
+
         {/* phone */}
-        <div className="mb-3 input-group-lg">
-          <label htmlFor="phone" className="form-label fw-bold">
-            phone:
-          </label>
-          <input
-            type="tel"
-            className="form-control mb-2"
-            id="phone"
-            name="phone"
-            value={formik.values.phone}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-          />
-          {formik.errors.phone && formik.touched.phone ? (
-            <div className="alert alert-danger">{formik.errors.phone}</div>
-          ) : null}
-        </div>
+        <CustomInput
+          label="Phone"
+          inputClasses="form-control mb-2"
+          labelClasses="form-label fw-bold"
+          error={formik.errors.phone}
+          touched={formik.touched.phone}
+          type="tel"
+          value={formik.values.phone}
+          autoComplete="tel"
+          id="phone"
+          name="phone"
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+        />
+
         {/* city */}
-        <div className="mb-3 input-group-lg">
-          <label htmlFor="city" className="form-label fw-bold">
-            city:
-          </label>
-          <input
-            type="text"
-            className="form-control mb-2"
-            id="city"
-            name="city"
-            value={formik.values.city}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-          />
-          {formik.errors.city && formik.touched.city ? (
-            <div className="alert alert-danger">{formik.errors.city}</div>
-          ) : null}
-        </div>
+        <CustomInput
+          label="City"
+          inputClasses="form-control mb-2"
+          labelClasses="form-label fw-bold"
+          error={formik.errors.city}
+          touched={formik.touched.city}
+          type="text"
+          value={formik.values.city}
+          id="city"
+          name="city"
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+        />
+
         {/* payment options */}
         <div className="mb-3 input-group-lg">
           <label htmlFor="payment-options" className="form-label fw-bold">

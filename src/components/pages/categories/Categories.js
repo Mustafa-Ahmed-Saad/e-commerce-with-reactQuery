@@ -5,8 +5,6 @@ import { useGetCategories } from "../../../helper/hooks/asyncFunction";
 export default function Categories() {
   const { categories } = useGetCategories();
 
-  console.log("categories", categories);
-
   return (
     <>
       <SEO
