@@ -79,7 +79,6 @@ export default function MainContextProvider({ children }) {
         setMode,
         mainColor,
         setMainColor,
-        setEnableWishlist,
       }}
     >
       {children}

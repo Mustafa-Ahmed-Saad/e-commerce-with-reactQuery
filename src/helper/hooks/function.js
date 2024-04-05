@@ -17,12 +17,10 @@ export function useUpdateCart() {
 }
 
 export function useLogOutHook() {
-  const { setToken, setEnableWishlist } = useContextMain();
+  const { setToken } = useContextMain();
   const queryClient = useQueryClient();
 
   const logOut = () => {
-    // we make setEnableWishlist false to unrefetch wishList when logout
-    setEnableWishlist(false);
     Cookies.remove("token");
     setToken(false);
     localStorage.clear();
