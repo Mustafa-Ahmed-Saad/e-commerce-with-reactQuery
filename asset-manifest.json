@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/e-commerce-with-reactQuery/static/css/main.9feeea6e.css",
-    "main.js": "/e-commerce-with-reactQuery/static/js/main.6a9b8114.js",
+    "main.js": "/e-commerce-with-reactQuery/static/js/main.da18d5e7.js",
     "static/js/787.ca3ba573.chunk.js": "/e-commerce-with-reactQuery/static/js/787.ca3ba573.chunk.js",
     "static/media/slider-image-1.webp": "/e-commerce-with-reactQuery/static/media/slider-image-1.8e7c8fb6784218e42352.webp",
     "static/media/masterCard.webp": "/e-commerce-with-reactQuery/static/media/masterCard.560c258e385ddadb4450.webp",
@@ -20,11 +20,11 @@
     "static/media/slick.woff": "/e-commerce-with-reactQuery/static/media/slick.295183786cd8a1389865.woff",
     "index.html": "/e-commerce-with-reactQuery/index.html",
     "main.9feeea6e.css.map": "/e-commerce-with-reactQuery/static/css/main.9feeea6e.css.map",
-    "main.6a9b8114.js.map": "/e-commerce-with-reactQuery/static/js/main.6a9b8114.js.map",
+    "main.da18d5e7.js.map": "/e-commerce-with-reactQuery/static/js/main.da18d5e7.js.map",
     "787.ca3ba573.chunk.js.map": "/e-commerce-with-reactQuery/static/js/787.ca3ba573.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.9feeea6e.css",
-    "static/js/main.6a9b8114.js"
+    "static/js/main.da18d5e7.js"
   ]
 }
